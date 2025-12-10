@@ -34,7 +34,8 @@ app.use(session({
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback" // Make sure this matches Google Cloud Console
+    callbackURL: "/auth/google/callback", // Make sure this matches Google Cloud Console
+    proxy: true
 },
     async function (accessToken, refreshToken, profile, cb) {
         try {
