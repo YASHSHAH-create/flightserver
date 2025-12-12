@@ -225,10 +225,20 @@ const getClassCode = (classStr) => {
     return map[classStr?.toLowerCase()] || 1; // Default to 1 (All)
 };
 
-app.get('/api/search', ensureToken, async (req, res) => {
+app.get(['/api/search', '/search'], ensureToken, async (req, res) => {
     try {
 
-        const { from, to, date, returnDate, adults, children, infants, class: flightClass, journeyType } = req.query;
+        let { from, to, date, returnDate, adults, children, infants, class: flightClass, journeyType } = req.query;
+
+        // Sanitize inputs for OneWay/Return to handle duplicate query params
+        const getSingleValue = (val) => Array.isArray(val) ? val[0] : val;
+
+        if (parseInt(journeyType) !== 3) {
+            from = getSingleValue(from);
+            to = getSingleValue(to);
+            date = getSingleValue(date);
+            returnDate = getSingleValue(returnDate);
+        }
 
         // Basic validation for required fields (first segment)
         if (!from || !to || !date) {
@@ -740,6 +750,14 @@ app.post('/flights/ticket', ensureToken, async (req, res) => {
         }
     }
 });
+
+app.get('/health', (req, res) => {
+    res.json({ message: 'Server is running' });
+})
+
+
+
+
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     await authenticate();
