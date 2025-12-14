@@ -9,6 +9,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo').default;
 const User = require('./models/User');
 const Booking = require('./models/Booking');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -72,12 +73,33 @@ app.use(passport.session());
 
 
 // Auth Routes
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google', (req, res, next) => {
+    const state = req.query.state;
+    const authenticator = passport.authenticate('google', { scope: ['profile', 'email'], state: state });
+    authenticator(req, res, next);
+});
 
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login-failed' }),
     function (req, res) {
-        res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000');
+        // Successful authentication
+        // Generate JWT Token
+        const token = jwt.sign(
+            { id: req.user._id, email: req.user.email },
+            process.env.JWT_SECRET || 'secret_key',
+            { expiresIn: '7d' }
+        );
+
+        const state = req.query.state;
+
+        if (state) {
+            // Redirect to the mobile app (or whatever URL was passed in state) with the token
+            const redirectUrl = `${state}${state.includes('?') ? '&' : '?'}token=${token}`;
+            res.redirect(redirectUrl);
+        } else {
+            // Default fallback for web login
+            res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000');
+        }
     }
 );
 
@@ -347,6 +369,17 @@ app.get(['/api/search', '/search'], ensureToken, async (req, res) => {
                 const retryResponse = await axios.post(process.env.SEARCH_API_URL, payload);
                 return res.json(retryResponse.data);
             }
+        }
+
+        // Save response to file
+        try {
+            const fs = require('fs');
+            const path = require('path');
+            const dumpPath = path.join(__dirname, 'search_response_dump.json');
+            fs.writeFileSync(dumpPath, JSON.stringify(response.data, null, 2));
+            console.log('Search response saved to:', dumpPath);
+        } catch (fileErr) {
+            console.error('Error saving search response dump:', fileErr);
         }
 
         res.json(response.data);
