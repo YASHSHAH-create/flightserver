@@ -1,0 +1,13 @@
+{
+  "bookResponse": {
+    "Response": {
+      "Error": {
+        "ErrorCode": 5,
+        "ErrorMessage": "TraceID can not be Null or Empty"
+      },
+      "TraceId": "",
+      "ResponseStatus": 4,
+      "Response": null
+    }
+  }
+}
