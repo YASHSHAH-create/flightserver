@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 const saveBookingData = async (req, res) => {
     try {
-        const { isLCC, TraceId, ResultIndex, Passengers } = req.body;
+        const { isLCC, TraceId, ResultIndex, Passengers, orderId, googleId } = req.body;
 
         const bookingHash = crypto.randomBytes(32).toString('hex');
 
@@ -12,7 +12,10 @@ const saveBookingData = async (req, res) => {
             TraceId,
             ResultIndex,
             Passengers,
-            bookingHash
+            bookingHash,
+            orderId,
+            googleId,
+            paymentStatus: 'Pending'
         });
 
         await newBookingSession.save();
@@ -44,7 +47,29 @@ const getBookingData = async (req, res) => {
     }
 };
 
+const retrieveBookingByHash = async (req, res) => {
+    try {
+        const { hash } = req.body;
+
+        if (!hash) {
+            return res.status(400).json({ error: 'Hash is required' });
+        }
+
+        const bookingSession = await BookingSession.findOne({ bookingHash: hash });
+
+        if (!bookingSession) {
+            return res.status(404).json({ error: 'Booking session not found' });
+        }
+
+        res.status(200).json(bookingSession);
+    } catch (error) {
+        console.error('Error retrieving booking data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     saveBookingData,
-    getBookingData
+    getBookingData,
+    retrieveBookingByHash
 };

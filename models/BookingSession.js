@@ -41,6 +41,9 @@ const bookingSessionSchema = new mongoose.Schema({
     ResultIndex: { type: String },
     Passengers: [passengerSchema],
     bookingHash: { type: String, unique: true },
+    orderId: { type: String },
+    googleId: { type: String },
+    paymentStatus: { type: String, default: 'Pending' },
     createdAt: { type: Date, default: Date.now }
 });
 
