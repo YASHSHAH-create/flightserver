@@ -36,6 +36,54 @@ const getCurrentUser = (req, res) => {
     res.json(req.user || null);
 };
 
+const User = require('../models/User');
+
+const syncGoogleUser = async (req, res) => {
+    try {
+        const { googleId, email, name, picture, pushToken } = req.body;
+
+        if (!googleId || !email) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        let user = await User.findOne({ googleId });
+
+        if (!user) {
+            // Create new user
+            user = new User({
+                googleId,
+                email,
+                name,
+                picture,
+                pushToken
+            });
+            await user.save();
+        } else {
+            // Update existing (optional, but good for keeping profile fresh)
+            user.email = email;
+            user.name = name;
+            user.picture = picture;
+            if (pushToken) {
+                user.pushToken = pushToken;
+            }
+            await user.save();
+        }
+
+        // Generate token (optional, if we want to switch to backend-jwt later, but for now we just need the user DB record)
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET || 'secret_key',
+            { expiresIn: '7d' }
+        );
+
+        res.json({ success: true, user, token });
+
+    } catch (error) {
+        console.error('Error syncing user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 const logout = (req, res) => {
     req.logout((err) => {
         if (err) { return res.status(500).json({ error: 'Logout failed' }); }
@@ -47,5 +95,7 @@ module.exports = {
     googleAuth,
     googleCallback,
     getCurrentUser,
-    logout
+    getCurrentUser,
+    logout,
+    syncGoogleUser
 };

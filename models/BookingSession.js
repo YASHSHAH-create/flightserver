@@ -44,6 +44,7 @@ const bookingSessionSchema = new mongoose.Schema({
     orderId: { type: String },
     googleId: { type: String },
     paymentStatus: { type: String, default: 'Pending' },
+    flightInfo: { type: Object },
     createdAt: { type: Date, default: Date.now }
 });
 

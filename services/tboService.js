@@ -84,7 +84,10 @@ const getFareQuote = async (payload) => {
         const response = await axios.post(process.env.FARE_QUOTE_API_URL, payload);
 
         if (response.data && response.data.Response && response.data.Response.Error && response.data.Response.Error.ErrorCode !== 0) {
-            if (response.data.Response.Error.ErrorMessage.includes("Session is not valid")) {
+            // Check for Session Invalid OR Generic Supplier Error (28) which sometimes fixes with re-auth
+            const errMsg = response.data.Response.Error.ErrorMessage;
+            if (errMsg.includes("Session is not valid") || response.data.Response.Error.ErrorCode === 28) {
+                console.log(`Encountered Error ${response.data.Response.Error.ErrorCode}, re-authenticating...`);
                 await authenticate();
                 payload.TokenId = tokenId;
                 const retryResponse = await axios.post(process.env.FARE_QUOTE_API_URL, payload);
@@ -144,6 +147,14 @@ const ticketNonLCC = async (payload) => {
     return response.data;
 };
 
+const getBookingDetails = async (payload) => {
+    payload.TokenId = await getToken();
+    const TBO_GET_BOOKING_DETAILS_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetBookingDetails";
+    console.log('Sending GetBookingDetails request:', JSON.stringify(payload, null, 2));
+    const response = await axios.post(TBO_GET_BOOKING_DETAILS_URL, payload);
+    return response.data;
+};
+
 module.exports = {
     authenticate,
     getToken,
@@ -153,5 +164,6 @@ module.exports = {
     getSSR,
     ticketLCC,
     bookNonLCC,
-    ticketNonLCC
+    ticketNonLCC,
+    getBookingDetails
 };

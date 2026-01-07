@@ -2,12 +2,841 @@
   "bookResponse": {
     "Response": {
       "Error": {
-        "ErrorCode": 5,
-        "ErrorMessage": "TraceID can not be Null or Empty"
+        "ErrorCode": 0,
+        "ErrorMessage": ""
       },
-      "TraceId": "",
-      "ResponseStatus": 4,
-      "Response": null
+      "TraceId": "ddd6a434-9074-46b5-b3e6-d5f4795c9150",
+      "ResponseStatus": 1,
+      "Response": {
+        "ItineraryChangeList": null,
+        "PNR": "8WVEXO",
+        "BookingId": 2060194,
+        "SSRDenied": false,
+        "SSRMessage": null,
+        "Status": 1,
+        "IsPriceChanged": false,
+        "IsTimeChanged": false,
+        "FlightItinerary": {
+          "CommentDetails": null,
+          "FareClassification": "Publish#rgb(182,215,228) ",
+          "IsSeatsBooked": false,
+          "JourneyType": 1,
+          "SearchCombinationType": 2,
+          "SupplierFareClasses": null,
+          "TBOConfNo": "TBFOPLPFL",
+          "TBOTripID": null,
+          "TripIndicator": 1,
+          "BookingAllowedForRoamer": true,
+          "BookingId": 2060194,
+          "IsCouponAppilcable": true,
+          "IsManual": false,
+          "PNR": "8WVEXO",
+          "IsDomestic": false,
+          "ResultFareType": "RegularFare",
+          "Source": 4,
+          "Origin": "DEL",
+          "Destination": "DXB",
+          "AirlineCode": "AI",
+          "LastTicketDate": "2026-01-03T05:25:00",
+          "ValidatingAirlineCode": "AI",
+          "AirlineRemark": "We are testing Airline remark node",
+          "IsLCC": false,
+          "NonRefundable": true,
+          "FareType": "RP",
+          "CreditNoteNo": null,
+          "Fare": {
+            "CFARAmount": 0,
+            "DCFARAmount": 0,
+            "ServiceFeeDisplayType": 0,
+            "Currency": "INR",
+            "BaseFare": 17900,
+            "Tax": 3407,
+            "TaxBreakup": [
+              {
+                "key": "K3",
+                "value": 0
+              },
+              {
+                "key": "NotSet",
+                "value": 0
+              },
+              {
+                "key": "TotalTax",
+                "value": 3407
+              }
+            ],
+            "YQTax": 0,
+            "AdditionalTxnFeeOfrd": 0,
+            "AdditionalTxnFeePub": 0,
+            "PGCharge": 0,
+            "OtherCharges": 0,
+            "ChargeBU": [
+              {
+                "key": "TBOMARKUP",
+                "value": 0
+              },
+              {
+                "key": "GLOBALPROCUREMENTCHARGE",
+                "value": 0
+              },
+              {
+                "key": "OTHERCHARGE",
+                "value": 0
+              },
+              {
+                "key": "CONVENIENCECHARGE",
+                "value": 0
+              }
+            ],
+            "Discount": 0,
+            "PublishedFare": 21307,
+            "CommissionEarned": 540.34,
+            "PLBEarned": 456.41,
+            "IncentiveEarned": 558.23,
+            "OfferedFare": 20374.01,
+            "TdsOnCommission": 216.14,
+            "TdsOnPLB": 182.56,
+            "TdsOnIncentive": 223.29,
+            "ServiceFee": 0,
+            "TotalBaggageCharges": 0,
+            "TotalMealCharges": 0,
+            "TotalSeatCharges": 0,
+            "TotalSpecialServiceCharges": 0
+          },
+          "CreditNoteCreatedOn": null,
+          "Passenger": [
+            {
+              "BarcodeDetails": {
+                "Id": 0,
+                "Barcode": [
+                  {
+                    "Index": 1,
+                    "Format": "PDF417",
+                    "Content": "M1DOE/JOHN             8WVEXO DELDXBAI 0811 003Y000000000000",
+                    "BarCodeInBase64": null,
+                    "JourneyWayType": 3
+                  }
+                ]
+              },
+              "DocumentDetails": [
+                {
+                  "DocumentExpiryDate": "2030-01-01",
+                  "DocumentNumber": "AB123456",
+                  "DocumentTypeId": "Passport",
+                  "PaxId": 0,
+                  "ResultFareType": 0
+                }
+              ],
+              "GuardianDetails": null,
+              "PaxId": 3322612,
+              "Title": "Mr",
+              "FirstName": "John",
+              "LastName": "Doe",
+              "PaxType": 1,
+              "DateOfBirth": "1990-01-01T05:30:00",
+              "Gender": 1,
+              "IsPANRequired": false,
+              "IsPassportRequired": true,
+              "PAN": "",
+              "PassportNo": "AB123456",
+              "PassportExpiry": "2030-01-01T05:30:00",
+              "AddressLine1": "123, Tech Park",
+              "Fare": {
+                "CFARAmount": 0,
+                "DCFARAmount": 0,
+                "ServiceFeeDisplayType": 0,
+                "Currency": "INR",
+                "BaseFare": 17900,
+                "Tax": 3407,
+                "TaxBreakup": [
+                  {
+                    "key": "K3",
+                    "value": 0
+                  },
+                  {
+                    "key": "NotSet",
+                    "value": 0
+                  },
+                  {
+                    "key": "TotalTax",
+                    "value": 3407
+                  }
+                ],
+                "YQTax": 0,
+                "AdditionalTxnFeeOfrd": 0,
+                "AdditionalTxnFeePub": 0,
+                "PGCharge": 0,
+                "OtherCharges": 0,
+                "ChargeBU": [
+                  {
+                    "key": "TBOMARKUP",
+                    "value": 0
+                  },
+                  {
+                    "key": "GLOBALPROCUREMENTCHARGE",
+                    "value": 0
+                  },
+                  {
+                    "key": "OTHERCHARGE",
+                    "value": 0
+                  },
+                  {
+                    "key": "CONVENIENCECHARGE",
+                    "value": 0
+                  }
+                ],
+                "Discount": 0,
+                "PublishedFare": 21307,
+                "CommissionEarned": 540.34,
+                "PLBEarned": 456.41,
+                "IncentiveEarned": 558.23,
+                "OfferedFare": 20374.01,
+                "TdsOnCommission": 216.14,
+                "TdsOnPLB": 182.56,
+                "TdsOnIncentive": 223.29,
+                "ServiceFee": 0,
+                "TotalBaggageCharges": 0,
+                "TotalMealCharges": 0,
+                "TotalSeatCharges": 0,
+                "TotalSpecialServiceCharges": 0
+              },
+              "City": "Bangalore",
+              "CountryCode": "IN",
+              "CountryName": "India",
+              "Nationality": "IN",
+              "ContactNo": "9876543210",
+              "Email": "john.doe@example.com",
+              "IsLeadPax": true,
+              "FFAirlineCode": null,
+              "FFNumber": null,
+              "Ssr": []
+            }
+          ],
+          "CancellationCharges": null,
+          "Segments": [
+            {
+              "Baggage": "25 KG",
+              "CabinBaggage": "Included",
+              "CabinClass": 2,
+              "SupplierFareClass": null,
+              "TripIndicator": 1,
+              "SegmentIndicator": 1,
+              "Airline": {
+                "AirlineCode": "AI",
+                "AirlineName": "Air India",
+                "FlightNumber": "811",
+                "FareClass": "W",
+                "OperatingCarrier": "AI"
+              },
+              "AirlinePNR": "8WVEXO",
+              "Origin": {
+                "Airport": {
+                  "AirportCode": "DEL",
+                  "AirportName": "Indira Gandhi Airport",
+                  "Terminal": "3",
+                  "CityCode": "DEL",
+                  "CityName": "Delhi",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "DepTime": "2026-01-03T18:55:00"
+              },
+              "Destination": {
+                "Airport": {
+                  "AirportCode": "LKO",
+                  "AirportName": "Amausi",
+                  "Terminal": "3",
+                  "CityCode": "LKO",
+                  "CityName": "Lucknow",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "ArrTime": "2026-01-03T19:55:00"
+              },
+              "Duration": 60,
+              "GroundTime": 0,
+              "Mile": 0,
+              "StopOver": false,
+              "FlightInfoIndex": "",
+              "StopPoint": "",
+              "StopPointArrivalTime": "0001-01-01T00:00:00",
+              "StopPointDepartureTime": "0001-01-01T00:00:00",
+              "Craft": "320",
+              "Remark": null,
+              "IsETicketEligible": true,
+              "FlightStatus": "Confirmed",
+              "Status": "HK",
+              "FareClassification": null
+            },
+            {
+              "Baggage": "25 KG",
+              "CabinBaggage": "Included",
+              "CabinClass": 2,
+              "SupplierFareClass": null,
+              "TripIndicator": 1,
+              "SegmentIndicator": 2,
+              "Airline": {
+                "AirlineCode": "AI",
+                "AirlineName": "Air India",
+                "FlightNumber": "9135",
+                "FareClass": "W",
+                "OperatingCarrier": "IX"
+              },
+              "AirlinePNR": "8WVEXO",
+              "Origin": {
+                "Airport": {
+                  "AirportCode": "LKO",
+                  "AirportName": "Amausi",
+                  "Terminal": "3",
+                  "CityCode": "LKO",
+                  "CityName": "Lucknow",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "DepTime": "2026-01-04T08:45:00"
+              },
+              "Destination": {
+                "Airport": {
+                  "AirportCode": "DXB",
+                  "AirportName": "Dubai",
+                  "Terminal": "2",
+                  "CityCode": "DXB",
+                  "CityName": "Dubai",
+                  "CountryCode": "AE",
+                  "CountryName": "United Arab Emirates"
+                },
+                "ArrTime": "2026-01-04T11:35:00"
+              },
+              "AccumulatedDuration": 1090,
+              "Duration": 260,
+              "GroundTime": 0,
+              "Mile": 0,
+              "StopOver": false,
+              "FlightInfoIndex": "",
+              "StopPoint": "",
+              "StopPointArrivalTime": "0001-01-01T00:00:00",
+              "StopPointDepartureTime": "0001-01-01T00:00:00",
+              "Craft": "737",
+              "Remark": null,
+              "IsETicketEligible": true,
+              "FlightStatus": "Confirmed",
+              "Status": "HK",
+              "FareClassification": null
+            }
+          ],
+          "FareRules": [
+            {
+              "Origin": "DEL",
+              "Destination": "LKO",
+              "Airline": "AI",
+              "FareBasisCode": "WU3YXYLK",
+              "FareRuleDetail": "<b>These Are Non Refundable Fares.</b></br><table border='1'><tr><th>Sector Details</th><th>Pax Type</th><th>Duration</th><th>Amount</th></tr><tr><th rowspan='1'>DEL-DXB</th><th rowspan='1'>Adult</th><td>Rest of time period</td><td>Not Allowed</td></tr></table><br /><br /><ul><li><b>There is no Minimum Stay requirement</b><br><li><b>There is no Maximum Stay requirement</b><br><fieldset><legend><b><b>Adult</b><br></b></legend><ul><li><b>Revalidation/Reissue</b><br>Fare Component <b>WU3YXYLK</b>&emsp; Sector <b>DEL-DXB</b> &nbsp;<ul><li>Revalidation before/after departure, including failure to show at first/subsequent flight(s) : <b>Not Allowed</b></li><li>Reissue before/after departure, including failure to show at first/subsequent flight(s) : <b>Allowed with Restrictions</b></li><li>Revalidation/Reissue request before/after departure, including failure to show at first/subsequent flight(s), must be made prior to <b>03JAN27  0000</b></li><li><b>Prior to Departure of journey</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li><li><b>Failure to show at first flight</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li><li><b>After departure of journey</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li><li><b>Failure to show at subsequent flight(s)</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li></ul></li><li><b>Refund</b><br>Fare Component <b>WU3YXYLK</b>&emsp; Sector <b>DEL-DXB</b> &nbsp;<ul><li>Refund, including failure to show at first flight : <b>Not Allowed</b></li><li><b>Prior to Departure of journey</b><ul><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li><li><b>Failure to show at first flight</b><ul><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li><li><b>After departure of journey</b><ul><li>Refund : <b>Allowed with Restrictions</b></li><li>Penalty fee : <b>8000 INR(at today exchange rates 8000 INR) </b></li><li>Maximum Refund penalty fee for entire ticket : <b>8000 INR</b></li><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li><li><b>Failure to show at subsequent flight(s)</b><ul><li>Refund : <b>Not Allowed</b></li><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li></ul></li><br><b>* Revalidation is a modification of the original ticket without any reissue of a new ticket.</b><br><b>* For Reissue, Penalty fees are in addition to any difference in fare.</b><br><b>* For Refund, certain Taxes are non-refundable.</b></ul></fieldset></ul><br/> <br/><b>These Are Non Refundable Fares.</b><br />RateClass : WU3YXYLK<br/>FareClass : WU3YXYLK<br/>marketing Company : AI<br/>Booking Class : W<br/>Origin : DEL<br/>destination : DXB<br/>ruleSectionLocalId : 1<br/>ruleCategoryCode : (5)<br/>AP.ADVANCE RES/TKT  RESERVATIONS ARE REQUIRED FOR ALL SECTORS.<br/>ruleSectionLocalId : 2<br/>ruleCategoryCode : (16)<br/>PE.PENALTIESFROM/TO MIDDLE EAST FOR WU3YXYLK TYPE FARES  CHANGES    CHARGE INR 4000 FOR REISSUE.         NOTE -          CHANGES NOTE          ...TILL 4 HRS CHARGE INR 4000 FOR REISSUE.          --------------------------------------------------          A CHANGE IS A DATE/FLIGHT/ROUTING/BOOKING CODE          CHANGE.          --------------------------------------------------          CHANGE FEE APPLIES PER PASSENGER PER TRANSACTION.          --------------------------------------------------          CHANGE FEE APPLICABLE FOR EACH CHANGED FARE          COMPONENTS. INCASE OF MULTIPLE FARE COMPONENTS-          CHANGE PENALTY WOULD BE HIGHEST OF ALL CHANGED          FARE COMPONENTS.          --------------------------------------------------          INCASE OF END-ON-END COMBINATION OF AI FARES WITH          INTERLINE PARTNER FARES OR INDIA DOMESTIC SECTOR          RESPECTIVE CHANGE FEE FOR EACH CHANGE COMPONENT          WOULD BE APPLICABLE.          RE-ROUTING ALLOWED IF ORIGIN AND DESTINATION          COUNTRIES REMAIN IN ONE COUNTRY.          CHANGE FEE DOES NOT APPLY TO INFANT NOT OCCUPYING          A SEAT.CHILD/INFANT WITH A SEAT-DISCOUNT DOES NOT          APPLY ON THE CHANGE/REROUTING FEES.          CHANGE IS PERMITTED WITHIN TICKET VALIDITY OF          ORIGINAL TICKET.          AT THE TIME OF ORIGINAL TICKETING WHEN INBOUND          FLIGHT DATE IS OUTSIDE SYSTEM RANGE ONE DATE          CHANGE PERMITTED FOC. RETURN DATE MUST BE          SPECIFIED AT TIME OF ORIGINAL BOOKING IN THE          OSI/REMARK. IN CASE ORIGINAL RBD IS NOT AVAILABLE          THEN APPLICABLE FARE DIFFERENCE SHALL APPLY          REISSUE TO BE DONE BY THE ORIGINAL ISSUING AGENT          OR AI OFFICES ONLY.          --------------------------------------------------          DOWNSELLING TO A LOWER FARE/BRAND/CABIN IS NOT          PERMITTED.          --------------------------------------------------          IN CASE OF CHANGE TO HIGHER BRAND/CABIN FOR          TRAVEL ON THE SAME DAY/SAME FLIGHT/RE-ISSUANCE          FEE WILL NOT BE APPLICABLE ONLY DIFFERENCE IN          FARE YQ YR AND APPLICABLE TAXES TO BE COLLECTED.          --------------------------------------------------          REPRICING SCENARIO          1.BEFORE DEPARTURE/ FULLY UNUTILIZED TICKETS-          BEFORE UTILIZATION OF THE FIRST COUPON OF THE          TICKET WHEN VOLUNTARY CHANGE OCCURS IRRESPECTIVE          OF OUTBOUND OR INBOUND FLIGHT OF THE JOURNEY THE          FARE WILL BE RECALCULATED BY APPLYING NEW          FARE/RULES ADHERING TO THE AP CONDITION IN EFFECT          ON THE DATE OF REISSUE.          2.AFTER DEPARTURE/ PARTIALLY UTILIZED TICKETS-          AFTER UTILIZATION OF THE FIRST COUPON OF THE          TICKET NEW FARE WILL BE RECALCULATED USING FARES          AS PER ORIGINAL DATE OF ISSUE.          --------------------------------------------------          IN CASE OF ERROR IN SPELLING OF PASSENGER NAME-          CORRECTION PERMITTED AT NO CHARGE. NAME CHANGE          NOT PERMITTED. PLEASE REFER RELEVANT CIRCULAR.          --------------------------------------------------          THE CHANGE/REISSUE CHARGE IS NON - REFUNDABLE          CHARGES ARE NON-COMMISSIONABLE. GST IF ANY WILL          BE ADDITIONAL.          5 PERCENT GST FOR ALL ECONOMY CLASS 18 PERCENT          GST FOR ALL FIRST / BUSINESS CLASS /PREMIUM          ECONOMY AND APPLICABLE TAXES TO BE COLLECTED.          --------------------------------------------------          IN THE EVENT OF MULTIPLE RE-ISSUANCE CHANGE FEE          WOULD BE APPLICABLE AS PER THE LATEST          TICKET PRESENTED FOR REISSUANCE.          --------------------------------------------------          THE CHANGE/REISSUE CHARGE IS NON - REFUNDABLE          --------------------------------------------------  CANCELLATIONS    CHARGE INR 8000 FOR REFUND.         NOTE -          ...TILL 4 HRS CHARGE INR 8000 FOR CANCELLATION.          --------------------------------------------------          CHILD/INFANT WITH A SEAT- DISCOUNT DOES NOT APPLY          --------------------------------------------------          REFUND FEE DOES NOT APPLY TO INFANT NOT OCCUPYING          A SEAT.          --------------------------------------------------          RESERVATIONS BOOKED MORE THAN 7 DAYS PRIOR TO          COMMENCEMENT OF TRAVEL MAY BE CANCELLED OR          AMENDED WITHIN 24 HOURS OF BOOKING TICKET WITHOUT          PENALTY. RESERVATIONS BOOKED WITHIN 7 DAYS OF          COMMENCEMENT OF TRAVEL ARE SUBJECT TO THE          APPLICABLE CANCELLATION PENALTY.          -------------------------------------------------          THE ABOVE-MENTIONED FREE LOOK IN OPTION IS          AUTOMATED FOR CANCELLATIONS DEFINED UNDER CAT 33.          HOWEVER IT CAN NOT BE PROCESSED FOR CHANGES          DEFINED UNDER CAT 31 THROUGH AUTOMATED          SYSTEM.HENCE KINDLY PROCESS MANUALLY.          -------------------------------------------------          IN CASE OF CANCELLATION MOST RESTRICTIVE PENALTY          RULE APPLIES OF ALL FARE COMPONENTS IN THE          PRICING UNIT.          THE CANCEL/REFUND CHARGE IS NON - REFUNDABLE          CHARGES ARE NON-COMMISSIONABLE. GST IF ANY WILL          BE ADDITIONAL.          5 PERCENT GST FOR ALL ECONOMY CLASS 18 PERCENT          GST FOR ALL FIRST / BUSINESS CLASS /PREMIUM          ECONOMY AND APPLICABLE TAXES TO BE COLLECTED.          --------------------------------------------------          THE CUT-OFF DATE FOR REFUND OF K3 TAX WILL BE          31ST OCTOBER YYYY FOR TICKETS ISSUED DURING          FINANCIAL YEAR  01ST APRIL XXXX TO 31ST MARCH          YYYY AND / OR EXCHANGED / REISSUED UPTO          31 OCTOBER YYYY          --------------------------------------------------          APPLICABLE PENALTIES TO BE RECOVERED FROM THE          BASIC FARE AND FUEL CHARGE ONLY. IN CASES WHERE          THE APPLICABLE CANCELLATION FEE IS HIGHER THAN          THE SUM OF THE BASIC FARE AND FUEL THAN ONLY          BASIC FARE AND FUEL TO BE CHARGED/FORFEITED.          --------------------------------------------------          YR AND UNUSED STATUTORY TAXES - EXAMPLE K3 TAX          OUT OF INDIA AND OTHER CHARGES LIKE AIRPORT          DEPARTURE TAX ETC TO BE REFUNDED IN FULL.          IN CASE OF PARTIALLY UTILIZED TICKETS CHARGE          ONEWAY FARE IN THE SAME RBD FOR THE SECTOR          UTILISED PLUS APPLICABLE TAXES.IF NO ONE WAY FARE          EXISTS FOR THE UTILISED SECTOR IN THE SAME RBD          THE NEXT HIGHER RBD WILL APPLY IN ADDITION TO THE          CANCELLATION FEE.          --------------------------------------------------          IN CASE OF END-ON-END COMBINATION OF AI FARES          WITH INTERLINE PARTNER FARES/ INDIA DOMESTIC          SECTOR FARES- RESPECTIVE CANCELLATION FEE FOR          EACH CANCELLED SECTOR WOULD BE APPLICABLE AS PER          SECTOR FAREBASIS.          --------------------------------------------------          VOLUNTARY DOWNGRADE - NO REFUNDS IN CASE OF          VOLUNTARY DOWNGRADE.          --------------------------------------------------          IN EVENT OF MULTIPLE REISSUANCES- CANCELLATION          FEE APPLICABLE WOULD BE AS PER THE HIGHEST          CANCELLATION FEE AMONGST THE ORIGINAL AND THE          REISSUED TICKETS.          --------------------------------------------------          FULL REFUND PERMITTED IN CASE OF VISA REJECTION          PROVIDED.          A- SUBMISSION OF PROPER DOCUMENTS SUCH AS EMBASSY          STATEMENT AT LEAST 14 DAYS BEFORE DEPARTURE.          B- OUTBOUND AND INBOUND JOURNEY IS BOOKED ON A          FLEX FARE TYPE ONLY.          --------------------------------------------------          OUT OF SEQUENCE TRAVEL NOT PERMITTED FOR THROUGH          AND CONNECTION FARES.          THERE WILL BE NO REFUND FOR OUT OF SEQUENCE          COUPON EXCEPT THE STATUTARY TAXES.          --------------------------------------------------          THE CANCEL/REFUND CHARGE IS NON - REFUNDABLE          --------------------------------------------------    TICKET IS NON-REFUNDABLE IN CASE OF NO-SHOW.         NOTE -          CHANGES/CANCELLATIONS          TICKET IS NON-REFUNDABLE IN CASE OF NO-SHOW.          --------------------------------------------------          NO SHOW IS WHEN A PAX FAILS TO CHANGE/CANCEL          BOOKING ATLEAST 04 HOURS BEFORE DEPARTURE OF THE          FLIGHT BEING CHANGED/CANCELLED.          --------------------------------------------------          NO-SHOW AND CHANGE WITHIN 4 HRS OF DEPARTURE TO          FLIGHT AND 48 HRS AFTER DEPARTURE OF FLIGHT          CHARGE INR 12000 FOR REISSUE.          NO-SHOW AND CHANGE BEYOND 48HRS AFTER DEPARTURE          OF FLIGHT CHANGE IS NOT PERMITTED.          --------------------------------------------------          FOR NO SHOW AND CANCEL - ANYTIME - TICKET IS NON          REFUDNABLE.          --------------------------------------------------          NO-SHOW FEE DOES NOT APPLY TO INFANT NOT          OCCUPYING A SEAT.          --------------------------------------------------          NO-SHOW FEE IS NON-REFUNDABLE.          --------------------------------------------------          NO-SHOW FEE ARE NON-COMMISSIONABLE.          GST IF ANY WILL BE ADDITIONAL.          5 PERCENT GST FOR ALL ECONOMY CLASS 18 PERCENT          GST FOR ALL FIRST / BUSINESS CLASS/PREMIUM          ECONOMY.          --------------------------------------------------          IN CASE OF NO-SHOW ONLY ONE FEE IS TO BE CHARGED          I.E. EITHER THE NO-SHOW FEE OR THE          CHANGE/CANCELLATION FEE WHICHEVER IS HIGHER AND          NOT BOTH.          --------------------------------------------------          GATE NO-SHOW - NO REFUND OF BASIC FARE AND FUEL          SURCHARGE. REFUND ONLY STATUTORY TAXES. ABOVE FEE          CANNOT BE PROCESSED THROUGH AUTOMATED REFUND AND          THE SAME TO BE PROCESSED MANUALLY FOR THE          COLLECTION OF GATE NO-SHOW FEE.          --------------------------------------------------          FOR WAIVER OF PENALTY ON ACCOUNT OF DEATH OF          PASSENGER OR IMMEDIATE FAMILY MEMBER PLEASE REFER          BELOW NOTE          --------------------------------------------------          IN CASE OF DEATH OF A PASSENGER OR IMMEDIATE          FAMILY MEMBER BEFORE COMMENCEMENT OF TRAVEL          PENALTY CHARGES STAND WAIVED OFF PROVIDED TICKET          IS PURCHASED BEFORE DEATH OF PASSENGER OR          IMMEDIATE FAMILY MEMBER. THE CANCELLATION/CHANGE          WAIVER IS APPLICABLE ONLY WHEN TICKET IS          PRESENTED BEFORE NO SHOW WINDOW.          --------------------------------------------------          IMMEDIATE FAMILY SHALL BE LIMITED TO SPOUSE          CHILDREN INCLUDING ADOPTED CHILDREN PARENTS          BROTHERS SISTERS GRAND-PARENTS GRANDCHILDREN FA          FATHER IN LAW MOTHER IN LAW SISTER IN LAW BROTHER          IN LAW SON IN LAW AND DAUGHTER IN LAW.          --------------------------------------------------          PENALTY ON ABOVE ACCOUNT IS WAIVED FOR FIRST          TRANSACTION ONLY. SUBSEQUENT TRANSACTION IF ANY          WILL ATTRACT APPLICABLE PENALTY.          --------------------------------------------------          IN CASE OF DEATH OF PASSENGER OCCURRED ENROUTE          AFTER COMMENCEMENT OF TRAVEL IMMEDIATE FAMILY          MEMBER OR  ACCOMPANYING PASSENGER WHO DOES NOT          QUALIFY AS IMMEDIATE FAMILY MEMBER OF THE          DECEASED MAY TERMINATE TRAVEL OR INTERRUPT TRAVEL          UNTIL COMPLETION OF FORMALITIES AND RELIGIOUS          CUSTOMS IF ANY BUT NO LATER THAN FORTYFIVE-45-          DAYS AFTER TRAVEL IS INTERRUPTED.          THE TICKET OF RETURNING PASSENGERS WILL BE          ENDORSED RETURN ACCOUNT DEATH - NAME -AND SUCH          ENDORSEMENT SHALL BE AUTHENTICATED BY VALIDATION          OR OTHER DUTY MANAGER OFFICIAL STAMP REFUND MAY          BE ARRANGED. RE-ROUTING MAYBE PERMITTED.          APPLICABLE PENALTY IF ANY MAY BE WAIVED          DIFFERENCE OF FARE NEEDS TO BE COLLECTED.          --------------------------------------------------          FOR RETURN/ONWARD TICKET REFUND DEDUCT ONE WAY          FARE AND LEVIES FOR THE TRAVELLED SECTOR AND          BALANCE AMOUNT MAY BE REFUNDED.          --------------------------------------------------          REFUND IN CASE OF DEATH WILL BE CALCULATED AFTER          DEDUCTING HALF RT FARE FOR THE TRAVELLED SECTOR          IRRESPECTIVE OF THE FARE CONDITIONS AND BALANCE          AMOUNT MAY BE REFUNDED.          --------------------------------------------------          IN THE EVENT A PASSENGER IS DISCONTINUING TRAVEL          WITH THE GROUP IN ACCORDANCE WITH THE ABOVE- THIS          SHALL NOT AFFECT THE ENTITLEMENT TO TRAVEL AT THE          GROUP FARE OF THE REMAINING PASSENGERS IN THE          GROUP. NO WAIVER WILL BE GRANTED IN ABSENCE OF          DEATH CERTIFICATE ISSUED BY COMPETENT          AUTHORITIES. I.E. THOSE DESIGNATED TO ISSUE DEATH          CERTIFICATE BY APPLICABLE LAWS OF THE COUNTRY IN          WHICH THE DEATH OCCURRED. WAIVER ISSUING STATION          MUST RETAIN THE COPY OF DEATH CERTIFICATE AND          RELATION PROOF OF BEING PART OF IMMEDIATE FAMILY          MEMBER.          --------------------------------------------------<br/><ul><li>GST, RAF AND ANY OTHER APPLICABLE CHARGES ARE EXTRA.</li><li>FEES ARE INDICATIVE PER PAX AND PER SECTOR.</li><li>FOR DOMESTIC BOOKINGS, PASSENGERS MUST SUBMIT THE CANCELLATION OR REISSUE REQUEST AT LEAST 2 HOURS BEFORE THE TIME LIMIT DEFINED IN THE AIRLINE's POLICY.</li><li>FOR INTERNATIONAL BOOKINGS, PASSENGERS MUST SUBMIT THE CANCELLATION OR REISSUE REQUEST AT LEAST 4 HOURS BEFORE THE TIME LIMIT DEFINED IN THE AIRLINE's POLICY.</li></ul>",
+              "FareRestriction": "N",
+              "FareFamilyCode": "ECOVALU",
+              "FareRuleIndex": ""
+            },
+            {
+              "Origin": "LKO",
+              "Destination": "DXB",
+              "Airline": "AI",
+              "FareBasisCode": "WU3YXYLK",
+              "FareRuleDetail": "Please refer above.<br/> <br/>Please refer above.",
+              "FareRestriction": "Y",
+              "FareFamilyCode": "ECOVALU",
+              "FareRuleIndex": ""
+            }
+          ],
+          "MiniFareRules": [
+            {
+              "CFARExcludedDetails": null,
+              "JourneyPoints": "DEL-LKO-DXB",
+              "Type": "Reissue",
+              "From": "",
+              "To": "",
+              "Unit": "",
+              "Details": "INR 12000*",
+              "OnlineReissueAllowed": true,
+              "OnlineRefundAllowed": false
+            },
+            {
+              "CFARExcludedDetails": null,
+              "JourneyPoints": "DEL-LKO-DXB",
+              "Type": "Cancellation",
+              "From": "",
+              "To": "",
+              "Unit": "",
+              "Details": "REFER TO DETAILED FARE RULES",
+              "OnlineReissueAllowed": false,
+              "OnlineRefundAllowed": false
+            }
+          ],
+          "PenaltyCharges": {},
+          "Status": 1,
+          "IsWebCheckInAllowed": false
+        }
+      }
+    }
+  },
+  "ticketResponse": {
+    "Response": {
+      "B2B2BStatus": false,
+      "Error": {
+        "ErrorCode": 0,
+        "ErrorMessage": ""
+      },
+      "ResponseStatus": 1,
+      "TraceId": "ddd6a434-9074-46b5-b3e6-d5f4795c9150",
+      "Response": {
+        "ItineraryChangeList": null,
+        "PNR": "8WVEXO",
+        "BookingId": 2060194,
+        "SSRDenied": false,
+        "SSRMessage": null,
+        "IsPriceChanged": false,
+        "IsTimeChanged": false,
+        "FlightItinerary": {
+          "AgentRemarks": "",
+          "CommentDetails": null,
+          "FareClassification": "Publish#rgb(182,215,228)",
+          "IsAutoReissuanceAllowed": true,
+          "IsSeatsBooked": false,
+          "IssuancePcc": "DELWI2216",
+          "JourneyType": 1,
+          "SearchCombinationType": 2,
+          "SupplierFareClasses": "",
+          "TBOConfNo": "TBFOPLPFL",
+          "TBOTripID": null,
+          "TripIndicator": 1,
+          "BookingAllowedForRoamer": true,
+          "BookingId": 2060194,
+          "IsCouponAppilcable": true,
+          "IsManual": false,
+          "PNR": "8WVEXO",
+          "IsDomestic": false,
+          "ResultFareType": "RegularFare",
+          "Source": 4,
+          "Origin": "DEL",
+          "Destination": "DXB",
+          "AirlineCode": "AI",
+          "LastTicketDate": "2026-01-03T05:25:00",
+          "ValidatingAirlineCode": "AI",
+          "AirlineRemark": "We are testing Airline remark node",
+          "IsLCC": false,
+          "NonRefundable": true,
+          "FareType": "RP",
+          "CreditNoteNo": null,
+          "Fare": {
+            "CFARAmount": 0,
+            "DCFARAmount": 0,
+            "ServiceFeeDisplayType": 0,
+            "Currency": "INR",
+            "BaseFare": 17900,
+            "Tax": 3407,
+            "TaxBreakup": [
+              {
+                "key": "K3",
+                "value": 912
+              },
+              {
+                "key": "YR",
+                "value": 330
+              },
+              {
+                "key": "INTax",
+                "value": 767
+              },
+              {
+                "key": "TotalTax",
+                "value": 3407
+              },
+              {
+                "key": "OtherTaxes",
+                "value": 1398
+              }
+            ],
+            "YQTax": 0,
+            "AdditionalTxnFeeOfrd": 0,
+            "AdditionalTxnFeePub": 0,
+            "PGCharge": 0,
+            "OtherCharges": 0,
+            "ChargeBU": [
+              {
+                "key": "TBOMARKUP",
+                "value": 0
+              },
+              {
+                "key": "GLOBALPROCUREMENTCHARGE",
+                "value": 0
+              },
+              {
+                "key": "OTHERCHARGE",
+                "value": 0
+              },
+              {
+                "key": "CONVENIENCECHARGE",
+                "value": 0
+              }
+            ],
+            "Discount": 0,
+            "PublishedFare": 21307,
+            "CommissionEarned": 540.34,
+            "PLBEarned": 456.41,
+            "IncentiveEarned": 558.23,
+            "OfferedFare": 20374.01,
+            "TdsOnCommission": 216.14,
+            "TdsOnPLB": 182.56,
+            "TdsOnIncentive": 223.29,
+            "ServiceFee": 0,
+            "TotalBaggageCharges": 0,
+            "TotalMealCharges": 0,
+            "TotalSeatCharges": 0,
+            "TotalSpecialServiceCharges": 0
+          },
+          "CreditNoteCreatedOn": null,
+          "Passenger": [
+            {
+              "BarcodeDetails": {
+                "Id": 3322612,
+                "Barcode": [
+                  {
+                    "Index": 1,
+                    "Format": "PDF417",
+                    "Content": "M1DOE/JOHN             8WVEXO DELDXBAI 0811 003Y000000000000",
+                    "BarCodeInBase64": null,
+                    "JourneyWayType": 3
+                  }
+                ]
+              },
+              "DocumentDetails": [
+                {
+                  "DocumentExpiryDate": "2030-01-01",
+                  "DocumentIssueDate": "1900-01-01",
+                  "DocumentIssuingCountry": "",
+                  "DocumentNumber": "AB123456",
+                  "DocumentTypeId": "Passport",
+                  "PaxId": 3322612,
+                  "ResultFareType": 2
+                }
+              ],
+              "GuardianDetails": null,
+              "PaxId": 3322612,
+              "Title": "Mr",
+              "FirstName": "John",
+              "LastName": "Doe",
+              "PaxType": 1,
+              "DateOfBirth": "1990-01-01T00:00:00",
+              "Gender": 1,
+              "IsPANRequired": false,
+              "IsPassportRequired": false,
+              "PAN": "",
+              "PassportNo": "AB123456",
+              "PassportExpiry": "2030-01-01T00:00:00",
+              "AddressLine1": "123, Tech Park",
+              "Fare": {
+                "CFARAmount": 0,
+                "DCFARAmount": 0,
+                "ServiceFeeDisplayType": 0,
+                "Currency": "INR",
+                "BaseFare": 17900,
+                "Tax": 3407,
+                "TaxBreakup": [
+                  {
+                    "key": "K3",
+                    "value": 912
+                  },
+                  {
+                    "key": "YR",
+                    "value": 330
+                  },
+                  {
+                    "key": "INTax",
+                    "value": 767
+                  },
+                  {
+                    "key": "TotalTax",
+                    "value": 3407
+                  },
+                  {
+                    "key": "OtherTaxes",
+                    "value": 1398
+                  }
+                ],
+                "YQTax": 0,
+                "AdditionalTxnFeeOfrd": 0,
+                "AdditionalTxnFeePub": 0,
+                "PGCharge": 0,
+                "OtherCharges": 0,
+                "ChargeBU": [
+                  {
+                    "key": "TBOMARKUP",
+                    "value": 0
+                  },
+                  {
+                    "key": "GLOBALPROCUREMENTCHARGE",
+                    "value": 0
+                  },
+                  {
+                    "key": "OTHERCHARGE",
+                    "value": 0
+                  },
+                  {
+                    "key": "CONVENIENCECHARGE",
+                    "value": 0
+                  }
+                ],
+                "Discount": 0,
+                "PublishedFare": 21307,
+                "CommissionEarned": 540.34,
+                "PLBEarned": 456.41,
+                "IncentiveEarned": 558.23,
+                "OfferedFare": 20374.01,
+                "TdsOnCommission": 216.14,
+                "TdsOnPLB": 182.56,
+                "TdsOnIncentive": 223.29,
+                "ServiceFee": 0,
+                "TotalBaggageCharges": 0,
+                "TotalMealCharges": 0,
+                "TotalSeatCharges": 0,
+                "TotalSpecialServiceCharges": 0
+              },
+              "City": "Bangalore",
+              "CountryCode": "IN",
+              "Nationality": "IN",
+              "ContactNo": "9876543210",
+              "Email": "john.doe@example.com",
+              "IsLeadPax": true,
+              "FFAirlineCode": null,
+              "FFNumber": null,
+              "Ssr": [
+                {
+                  "Detail": "AB123456-IN",
+                  "SsrCode": "PSPT",
+                  "SsrStatus": null,
+                  "Status": 3
+                }
+              ],
+              "Ticket": {
+                "TicketId": 2341743,
+                "TicketNumber": "2792775326",
+                "IssueDate": "2026-01-03T16:05:57",
+                "ValidatingAirline": "098",
+                "Remarks": "",
+                "ServiceFeeDisplayType": "ShowInTax",
+                "Status": "OK",
+                "ConjunctionNumber": "",
+                "TicketType": "N"
+              },
+              "SegmentAdditionalInfo": [
+                {
+                  "FareBasis": "WU3YXYLK",
+                  "NVA": "",
+                  "NVB": "",
+                  "Baggage": "25 KG",
+                  "Meal": "",
+                  "Seat": "",
+                  "SpecialService": "",
+                  "CabinBaggage": ""
+                },
+                {
+                  "FareBasis": "WU3YXYLK",
+                  "NVA": "",
+                  "NVB": "",
+                  "Baggage": "25 KG",
+                  "Meal": "",
+                  "Seat": "",
+                  "SpecialService": "",
+                  "CabinBaggage": ""
+                }
+              ]
+            }
+          ],
+          "CancellationCharges": null,
+          "Segments": [
+            {
+              "Baggage": "25 KG",
+              "CabinBaggage": "Included",
+              "CabinClass": 2,
+              "SupplierFareClass": null,
+              "TripIndicator": 1,
+              "SegmentIndicator": 1,
+              "Airline": {
+                "AirlineCode": "AI",
+                "AirlineName": "Air India",
+                "FlightNumber": "811",
+                "FareClass": "W",
+                "OperatingCarrier": "AI"
+              },
+              "AirlinePNR": "8WVEXO",
+              "Origin": {
+                "Airport": {
+                  "AirportCode": "DEL",
+                  "AirportName": "Indira Gandhi Airport",
+                  "Terminal": "3",
+                  "CityCode": "DEL",
+                  "CityName": "Delhi",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "DepTime": "2026-01-03T18:55:00"
+              },
+              "Destination": {
+                "Airport": {
+                  "AirportCode": "LKO",
+                  "AirportName": "Amausi",
+                  "Terminal": "3",
+                  "CityCode": "LKO",
+                  "CityName": "Lucknow",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "ArrTime": "2026-01-03T19:55:00"
+              },
+              "Duration": 60,
+              "GroundTime": 0,
+              "Mile": 0,
+              "StopOver": false,
+              "FlightInfoIndex": "1",
+              "StopPoint": "",
+              "StopPointArrivalTime": null,
+              "StopPointDepartureTime": null,
+              "Craft": "320",
+              "Remark": null,
+              "IsETicketEligible": true,
+              "FlightStatus": "Confirmed",
+              "Status": "HK",
+              "FareClassification": null
+            },
+            {
+              "Baggage": "25 KG",
+              "CabinBaggage": "Included",
+              "CabinClass": 2,
+              "SupplierFareClass": null,
+              "TripIndicator": 1,
+              "SegmentIndicator": 2,
+              "Airline": {
+                "AirlineCode": "AI",
+                "AirlineName": "Air India",
+                "FlightNumber": "9135",
+                "FareClass": "W",
+                "OperatingCarrier": "IX"
+              },
+              "AirlinePNR": "8WVEXO",
+              "Origin": {
+                "Airport": {
+                  "AirportCode": "LKO",
+                  "AirportName": "Amausi",
+                  "Terminal": "3",
+                  "CityCode": "LKO",
+                  "CityName": "Lucknow",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "DepTime": "2026-01-04T08:45:00"
+              },
+              "Destination": {
+                "Airport": {
+                  "AirportCode": "DXB",
+                  "AirportName": "Dubai",
+                  "Terminal": "2",
+                  "CityCode": "DXB",
+                  "CityName": "Dubai",
+                  "CountryCode": "AE",
+                  "CountryName": "United Arab Emirates"
+                },
+                "ArrTime": "2026-01-04T11:35:00"
+              },
+              "AccumulatedDuration": 1090,
+              "Duration": 260,
+              "GroundTime": 0,
+              "Mile": 0,
+              "StopOver": false,
+              "FlightInfoIndex": "2",
+              "StopPoint": "",
+              "StopPointArrivalTime": null,
+              "StopPointDepartureTime": null,
+              "Craft": "737",
+              "Remark": null,
+              "IsETicketEligible": true,
+              "FlightStatus": "Confirmed",
+              "Status": "HK",
+              "FareClassification": null
+            }
+          ],
+          "FareRules": [
+            {
+              "Origin": "DEL",
+              "Destination": "LKO",
+              "Airline": "AI",
+              "FareBasisCode": "WU3YXYLK",
+              "FareRuleDetail": "<b>These Are Non Refundable Fares.</b></br><table border='1'><tr><th>Sector Details</th><th>Pax Type</th><th>Duration</th><th>Amount</th></tr><tr><th rowspan='1'>DEL-DXB</th><th rowspan='1'>Adult</th><td>Rest of time period</td><td>Not Allowed</td></tr></table><br /><br /><ul><li><b>There is no Minimum Stay requirement</b><br><li><b>There is no Maximum Stay requirement</b><br><fieldset><legend><b><b>Adult</b><br></b></legend><ul><li><b>Revalidation/Reissue</b><br>Fare Component <b>WU3YXYLK</b>&emsp; Sector <b>DEL-DXB</b> &nbsp;<ul><li>Revalidation before/after departure, including failure to show at first/subsequent flight(s) : <b>Not Allowed</b></li><li>Reissue before/after departure, including failure to show at first/subsequent flight(s) : <b>Allowed with Restrictions</b></li><li>Revalidation/Reissue request before/after departure, including failure to show at first/subsequent flight(s), must be made prior to <b>03JAN27  0000</b></li><li><b>Prior to Departure of journey</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li><li><b>Failure to show at first flight</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li><li><b>After departure of journey</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li><li><b>Failure to show at subsequent flight(s)</b><ul><u>Reissue</u><li>Penalty fee between : <b>0 INR/12000 INR</b></li><li>Maximum reissue penalty fee for entire ticket (per reissue) : <b>12000 INR</b></li></ul></li></ul></li><li><b>Refund</b><br>Fare Component <b>WU3YXYLK</b>&emsp; Sector <b>DEL-DXB</b> &nbsp;<ul><li>Refund, including failure to show at first flight : <b>Not Allowed</b></li><li><b>Prior to Departure of journey</b><ul><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li><li><b>Failure to show at first flight</b><ul><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li><li><b>After departure of journey</b><ul><li>Refund : <b>Allowed with Restrictions</b></li><li>Penalty fee : <b>8000 INR(at today exchange rates 8000 INR) </b></li><li>Maximum Refund penalty fee for entire ticket : <b>8000 INR</b></li><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li><li><b>Failure to show at subsequent flight(s)</b><ul><li>Refund : <b>Not Allowed</b></li><li>Refund request must be made prior to : <b>No restriction</b></li></ul></li></ul></li><br><b>* Revalidation is a modification of the original ticket without any reissue of a new ticket.</b><br><b>* For Reissue, Penalty fees are in addition to any difference in fare.</b><br><b>* For Refund, certain Taxes are non-refundable.</b></ul></fieldset></ul><br/> <br/><b>These Are Non Refundable Fares.</b><br />RateClass : WU3YXYLK<br/>FareClass : WU3YXYLK<br/>marketing Company : AI<br/>Booking Class : W<br/>Origin : DEL<br/>destination : DXB<br/>ruleSectionLocalId : 1<br/>ruleCategoryCode : (5)<br/>AP.ADVANCE RES/TKT  RESERVATIONS ARE REQUIRED FOR ALL SECTORS.<br/>ruleSectionLocalId : 2<br/>ruleCategoryCode : (16)<br/>PE.PENALTIESFROM/TO MIDDLE EAST FOR WU3YXYLK TYPE FARES  CHANGES    CHARGE INR 4000 FOR REISSUE.         NOTE -          CHANGES NOTE          ...TILL 4 HRS CHARGE INR 4000 FOR REISSUE.          --------------------------------------------------          A CHANGE IS A DATE/FLIGHT/ROUTING/BOOKING CODE          CHANGE.          --------------------------------------------------          CHANGE FEE APPLIES PER PASSENGER PER TRANSACTION.          --------------------------------------------------          CHANGE FEE APPLICABLE FOR EACH CHANGED FARE          COMPONENTS. INCASE OF MULTIPLE FARE COMPONENTS-          CHANGE PENALTY WOULD BE HIGHEST OF ALL CHANGED          FARE COMPONENTS.          --------------------------------------------------          INCASE OF END-ON-END COMBINATION OF AI FARES WITH          INTERLINE PARTNER FARES OR INDIA DOMESTIC SECTOR          RESPECTIVE CHANGE FEE FOR EACH CHANGE COMPONENT          WOULD BE APPLICABLE.          RE-ROUTING ALLOWED IF ORIGIN AND DESTINATION          COUNTRIES REMAIN IN ONE COUNTRY.          CHANGE FEE DOES NOT APPLY TO INFANT NOT OCCUPYING          A SEAT.CHILD/INFANT WITH A SEAT-DISCOUNT DOES NOT          APPLY ON THE CHANGE/REROUTING FEES.          CHANGE IS PERMITTED WITHIN TICKET VALIDITY OF          ORIGINAL TICKET.          AT THE TIME OF ORIGINAL TICKETING WHEN INBOUND          FLIGHT DATE IS OUTSIDE SYSTEM RANGE ONE DATE          CHANGE PERMITTED FOC. RETURN DATE MUST BE          SPECIFIED AT TIME OF ORIGINAL BOOKING IN THE          OSI/REMARK. IN CASE ORIGINAL RBD IS NOT AVAILABLE          THEN APPLICABLE FARE DIFFERENCE SHALL APPLY          REISSUE TO BE DONE BY THE ORIGINAL ISSUING AGENT          OR AI OFFICES ONLY.          --------------------------------------------------          DOWNSELLING TO A LOWER FARE/BRAND/CABIN IS NOT          PERMITTED.          --------------------------------------------------          IN CASE OF CHANGE TO HIGHER BRAND/CABIN FOR          TRAVEL ON THE SAME DAY/SAME FLIGHT/RE-ISSUANCE          FEE WILL NOT BE APPLICABLE ONLY DIFFERENCE IN          FARE YQ YR AND APPLICABLE TAXES TO BE COLLECTED.          --------------------------------------------------          REPRICING SCENARIO          1.BEFORE DEPARTURE/ FULLY UNUTILIZED TICKETS-          BEFORE UTILIZATION OF THE FIRST COUPON OF THE          TICKET WHEN VOLUNTARY CHANGE OCCURS IRRESPECTIVE          OF OUTBOUND OR INBOUND FLIGHT OF THE JOURNEY THE          FARE WILL BE RECALCULATED BY APPLYING NEW          FARE/RULES ADHERING TO THE AP CONDITION IN EFFECT          ON THE DATE OF REISSUE.          2.AFTER DEPARTURE/ PARTIALLY UTILIZED TICKETS-          AFTER UTILIZATION OF THE FIRST COUPON OF THE          TICKET NEW FARE WILL BE RECALCULATED USING FARES          AS PER ORIGINAL DATE OF ISSUE.          --------------------------------------------------          IN CASE OF ERROR IN SPELLING OF PASSENGER NAME-          CORRECTION PERMITTED AT NO CHARGE. NAME CHANGE          NOT PERMITTED. PLEASE REFER RELEVANT CIRCULAR.          --------------------------------------------------          THE CHANGE/REISSUE CHARGE IS NON - REFUNDABLE          CHARGES ARE NON-COMMISSIONABLE. GST IF ANY WILL          BE ADDITIONAL.          5 PERCENT GST FOR ALL ECONOMY CLASS 18 PERCENT          GST FOR ALL FIRST / BUSINESS CLASS /PREMIUM          ECONOMY AND APPLICABLE TAXES TO BE COLLECTED.          --------------------------------------------------          IN THE EVENT OF MULTIPLE RE-ISSUANCE CHANGE FEE          WOULD BE APPLICABLE AS PER THE LATEST          TICKET PRESENTED FOR REISSUANCE.          --------------------------------------------------          THE CHANGE/REISSUE CHARGE IS NON - REFUNDABLE          --------------------------------------------------  CANCELLATIONS    CHARGE INR 8000 FOR REFUND.         NOTE -          ...TILL 4 HRS CHARGE INR 8000 FOR CANCELLATION.          --------------------------------------------------          CHILD/INFANT WITH A SEAT- DISCOUNT DOES NOT APPLY          --------------------------------------------------          REFUND FEE DOES NOT APPLY TO INFANT NOT OCCUPYING          A SEAT.          --------------------------------------------------          RESERVATIONS BOOKED MORE THAN 7 DAYS PRIOR TO          COMMENCEMENT OF TRAVEL MAY BE CANCELLED OR          AMENDED WITHIN 24 HOURS OF BOOKING TICKET WITHOUT          PENALTY. RESERVATIONS BOOKED WITHIN 7 DAYS OF          COMMENCEMENT OF TRAVEL ARE SUBJECT TO THE          APPLICABLE CANCELLATION PENALTY.          -------------------------------------------------          THE ABOVE-MENTIONED FREE LOOK IN OPTION IS          AUTOMATED FOR CANCELLATIONS DEFINED UNDER CAT 33.          HOWEVER IT CAN NOT BE PROCESSED FOR CHANGES          DEFINED UNDER CAT 31 THROUGH AUTOMATED          SYSTEM.HENCE KINDLY PROCESS MANUALLY.          -------------------------------------------------          IN CASE OF CANCELLATION MOST RESTRICTIVE PENALTY          RULE APPLIES OF ALL FARE COMPONENTS IN THE          PRICING UNIT.          THE CANCEL/REFUND CHARGE IS NON - REFUNDABLE          CHARGES ARE NON-COMMISSIONABLE. GST IF ANY WILL          BE ADDITIONAL.          5 PERCENT GST FOR ALL ECONOMY CLASS 18 PERCENT          GST FOR ALL FIRST / BUSINESS CLASS /PREMIUM          ECONOMY AND APPLICABLE TAXES TO BE COLLECTED.          --------------------------------------------------          THE CUT-OFF DATE FOR REFUND OF K3 TAX WILL BE          31ST OCTOBER YYYY FOR TICKETS ISSUED DURING          FINANCIAL YEAR  01ST APRIL XXXX TO 31ST MARCH          YYYY AND / OR EXCHANGED / REISSUED UPTO          31 OCTOBER YYYY          --------------------------------------------------          APPLICABLE PENALTIES TO BE RECOVERED FROM THE          BASIC FARE AND FUEL CHARGE ONLY. IN CASES WHERE          THE APPLICABLE CANCELLATION FEE IS HIGHER THAN          THE SUM OF THE BASIC FARE AND FUEL THAN ONLY          BASIC FARE AND FUEL TO BE CHARGED/FORFEITED.          --------------------------------------------------          YR AND UNUSED STATUTORY TAXES - EXAMPLE K3 TAX          OUT OF INDIA AND OTHER CHARGES LIKE AIRPORT          DEPARTURE TAX ETC TO BE REFUNDED IN FULL.          IN CASE OF PARTIALLY UTILIZED TICKETS CHARGE          ONEWAY FARE IN THE SAME RBD FOR THE SECTOR          UTILISED PLUS APPLICABLE TAXES.IF NO ONE WAY FARE          EXISTS FOR THE UTILISED SECTOR IN THE SAME RBD          THE NEXT HIGHER RBD WILL APPLY IN ADDITION TO THE          CANCELLATION FEE.          --------------------------------------------------          IN CASE OF END-ON-END COMBINATION OF AI FARES          WITH INTERLINE PARTNER FARES/ INDIA DOMESTIC          SECTOR FARES- RESPECTIVE CANCELLATION FEE FOR          EACH CANCELLED SECTOR WOULD BE APPLICABLE AS PER          SECTOR FAREBASIS.          --------------------------------------------------          VOLUNTARY DOWNGRADE - NO REFUNDS IN CASE OF          VOLUNTARY DOWNGRADE.          --------------------------------------------------          IN EVENT OF MULTIPLE REISSUANCES- CANCELLATION          FEE APPLICABLE WOULD BE AS PER THE HIGHEST          CANCELLATION FEE AMONGST THE ORIGINAL AND THE          REISSUED TICKETS.          --------------------------------------------------          FULL REFUND PERMITTED IN CASE OF VISA REJECTION          PROVIDED.          A- SUBMISSION OF PROPER DOCUMENTS SUCH AS EMBASSY          STATEMENT AT LEAST 14 DAYS BEFORE DEPARTURE.          B- OUTBOUND AND INBOUND JOURNEY IS BOOKED ON A          FLEX FARE TYPE ONLY.          --------------------------------------------------          OUT OF SEQUENCE TRAVEL NOT PERMITTED FOR THROUGH          AND CONNECTION FARES.          THERE WILL BE NO REFUND FOR OUT OF SEQUENCE          COUPON EXCEPT THE STATUTARY TAXES.          --------------------------------------------------          THE CANCEL/REFUND CHARGE IS NON - REFUNDABLE          --------------------------------------------------    TICKET IS NON-REFUNDABLE IN CASE OF NO-SHOW.         NOTE -          CHANGES/CANCELLATIONS          TICKET IS NON-REFUNDABLE IN CASE OF NO-SHOW.          --------------------------------------------------          NO SHOW IS WHEN A PAX FAILS TO CHANGE/CANCEL          BOOKING ATLEAST 04 HOURS BEFORE DEPARTURE OF THE          FLIGHT BEING CHANGED/CANCELLED.          --------------------------------------------------          NO-SHOW AND CHANGE WITHIN 4 HRS OF DEPARTURE TO          FLIGHT AND 48 HRS AFTER DEPARTURE OF FLIGHT          CHARGE INR 12000 FOR REISSUE.          NO-SHOW AND CHANGE BEYOND 48HRS AFTER DEPARTURE          OF FLIGHT CHANGE IS NOT PERMITTED.          --------------------------------------------------          FOR NO SHOW AND CANCEL - ANYTIME - TICKET IS NON          REFUDNABLE.          --------------------------------------------------          NO-SHOW FEE DOES NOT APPLY TO INFANT NOT          OCCUPYING A SEAT.          --------------------------------------------------          NO-SHOW FEE IS NON-REFUNDABLE.          --------------------------------------------------          NO-SHOW FEE ARE NON-COMMISSIONABLE.          GST IF ANY WILL BE ADDITIONAL.          5 PERCENT GST FOR ALL ECONOMY CLASS 18 PERCENT          GST FOR ALL FIRST / BUSINESS CLASS/PREMIUM          ECONOMY.          --------------------------------------------------          IN CASE OF NO-SHOW ONLY ONE FEE IS TO BE CHARGED          I.E. EITHER THE NO-SHOW FEE OR THE          CHANGE/CANCELLATION FEE WHICHEVER IS HIGHER AND          NOT BOTH.          --------------------------------------------------          GATE NO-SHOW - NO REFUND OF BASIC FARE AND FUEL          SURCHARGE. REFUND ONLY STATUTORY TAXES. ABOVE FEE          CANNOT BE PROCESSED THROUGH AUTOMATED REFUND AND          THE SAME TO BE PROCESSED MANUALLY FOR THE          COLLECTION OF GATE NO-SHOW FEE.          --------------------------------------------------          FOR WAIVER OF PENALTY ON ACCOUNT OF DEATH OF          PASSENGER OR IMMEDIATE FAMILY MEMBER PLEASE REFER          BELOW NOTE          --------------------------------------------------          IN CASE OF DEATH OF A PASSENGER OR IMMEDIATE          FAMILY MEMBER BEFORE COMMENCEMENT OF TRAVEL          PENALTY CHARGES STAND WAIVED OFF PROVIDED TICKET          IS PURCHASED BEFORE DEATH OF PASSENGER OR          IMMEDIATE FAMILY MEMBER. THE CANCELLATION/CHANGE          WAIVER IS APPLICABLE ONLY WHEN TICKET IS          PRESENTED BEFORE NO SHOW WINDOW.          --------------------------------------------------          IMMEDIATE FAMILY SHALL BE LIMITED TO SPOUSE          CHILDREN INCLUDING ADOPTED CHILDREN PARENTS          BROTHERS SISTERS GRAND-PARENTS GRANDCHILDREN FA          FATHER IN LAW MOTHER IN LAW SISTER IN LAW BROTHER          IN LAW SON IN LAW AND DAUGHTER IN LAW.          --------------------------------------------------          PENALTY ON ABOVE ACCOUNT IS WAIVED FOR FIRST          TRANSACTION ONLY. SUBSEQUENT TRANSACTION IF ANY          WILL ATTRACT APPLICABLE PENALTY.          --------------------------------------------------          IN CASE OF DEATH OF PASSENGER OCCURRED ENROUTE          AFTER COMMENCEMENT OF TRAVEL IMMEDIATE FAMILY          MEMBER OR  ACCOMPANYING PASSENGER WHO DOES NOT          QUALIFY AS IMMEDIATE FAMILY MEMBER OF THE          DECEASED MAY TERMINATE TRAVEL OR INTERRUPT TRAVEL          UNTIL COMPLETION OF FORMALITIES AND RELIGIOUS          CUSTOMS IF ANY BUT NO LATER THAN FORTYFIVE-45-          DAYS AFTER TRAVEL IS INTERRUPTED.          THE TICKET OF RETURNING PASSENGERS WILL BE          ENDORSED RETURN ACCOUNT DEATH - NAME -AND SUCH          ENDORSEMENT SHALL BE AUTHENTICATED BY VALIDATION          OR OTHER DUTY MANAGER OFFICIAL STAMP REFUND MAY          BE ARRANGED. RE-ROUTING MAYBE PERMITTED.          APPLICABLE PENALTY IF ANY MAY BE WAIVED          DIFFERENCE OF FARE NEEDS TO BE COLLECTED.          --------------------------------------------------          FOR RETURN/ONWARD TICKET REFUND DEDUCT ONE WAY          FARE AND LEVIES FOR THE TRAVELLED SECTOR AND          BALANCE AMOUNT MAY BE REFUNDED.          --------------------------------------------------          REFUND IN CASE OF DEATH WILL BE CALCULATED AFTER          DEDUCTING HALF RT FARE FOR THE TRAVELLED SECTOR          IRRESPECTIVE OF THE FARE CONDITIONS AND BALANCE          AMOUNT MAY BE REFUNDED.          --------------------------------------------------          IN THE EVENT A PASSENGER IS DISCONTINUING TRAVEL          WITH THE GROUP IN ACCORDANCE WITH THE ABOVE- THIS          SHALL NOT AFFECT THE ENTITLEMENT TO TRAVEL AT THE          GROUP FARE OF THE REMAINING PASSENGERS IN THE          GROUP. NO WAIVER WILL BE GRANTED IN ABSENCE OF          DEATH CERTIFICATE ISSUED BY COMPETENT          AUTHORITIES. I.E. THOSE DESIGNATED TO ISSUE DEATH          CERTIFICATE BY APPLICABLE LAWS OF THE COUNTRY IN          WHICH THE DEATH OCCURRED. WAIVER ISSUING STATION          MUST RETAIN THE COPY OF DEATH CERTIFICATE AND          RELATION PROOF OF BEING PART OF IMMEDIATE FAMILY          MEMBER.          --------------------------------------------------<br/><ul><li>GST, RAF AND ANY OTHER APPLICABLE CHARGES ARE EXTRA.</li><li>FEES ARE INDICATIVE PER PAX AND PER SECTOR.</li><li>FOR DOMESTIC BOOKINGS, PASSENGERS MUST SUBMIT THE CANCELLATION OR REISSUE REQUEST AT LEAST 2 HOURS BEFORE THE TIME LIMIT DEFINED IN THE AIRLINE's POLICY.</li><li>FOR INTERNATIONAL BOOKINGS, PASSENGERS MUST SUBMIT THE CANCELLATION OR REISSUE REQUEST AT LEAST 4 HOURS BEFORE THE TIME LIMIT DEFINED IN THE AIRLINE's POLICY.</li></ul>",
+              "FareRestriction": "N",
+              "FareFamilyCode": "",
+              "FareRuleIndex": "",
+              "FareInclusions": []
+            },
+            {
+              "Origin": "LKO",
+              "Destination": "DXB",
+              "Airline": "AI",
+              "FareBasisCode": "WU3YXYLK",
+              "FareRuleDetail": "Please refer above.<br/> <br/>Please refer above.",
+              "FareRestriction": "Y",
+              "FareFamilyCode": "",
+              "FareRuleIndex": "",
+              "FareInclusions": []
+            }
+          ],
+          "MiniFareRules": [
+            {
+              "CFARExcludedDetails": null,
+              "JourneyPoints": "DEL-LKO-DXB",
+              "Type": "Reissue",
+              "From": "",
+              "To": "",
+              "Unit": "",
+              "Details": "INR 12000*",
+              "OnlineReissueAllowed": true,
+              "OnlineRefundAllowed": false
+            },
+            {
+              "CFARExcludedDetails": null,
+              "JourneyPoints": "DEL-LKO-DXB",
+              "Type": "Cancellation",
+              "From": "",
+              "To": "",
+              "Unit": "",
+              "Details": "REFER TO DETAILED FARE RULES",
+              "OnlineReissueAllowed": false,
+              "OnlineRefundAllowed": false
+            }
+          ],
+          "PenaltyCharges": {
+            "ReissueCharge": "",
+            "CancellationCharge": ""
+          },
+          "Status": 5,
+          "Invoice": [
+            {
+              "CreditNoteGSTIN": null,
+              "GSTIN": null,
+              "InvoiceCreatedOn": "2026-01-03T16:05:58",
+              "InvoiceId": 18686,
+              "InvoiceNo": "IW/2526/18686",
+              "InvoiceAmount": 20374,
+              "Remarks": "",
+              "InvoiceStatus": 3
+            }
+          ],
+          "InvoiceAmount": 20374,
+          "InvoiceNo": "IW/2526/18686",
+          "InvoiceStatus": 3,
+          "InvoiceCreatedOn": "2026-01-03T16:05:58",
+          "Remarks": "",
+          "IsWebCheckInAllowed": false
+        },
+        "Message": "",
+        "TicketStatus": 1
+      }
     }
   }
 }

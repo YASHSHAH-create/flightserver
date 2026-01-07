@@ -164,7 +164,11 @@ const getFareQuote = async (req, res) => {
         };
 
         const data = await tboService.getFareQuote(payload);
-        res.json({ success: true, data });
+
+        // Check for business error in response
+        const hasError = data.Error && data.Error.ErrorCode !== 0;
+
+        res.json({ success: !hasError, data });
 
     } catch (error) {
         console.error('Fare Quote API Error:', error.message);
@@ -261,29 +265,6 @@ const bookFlight = async (req, res) => {
 
             // Check if Book step failed
             if (bookResponse.Response && bookResponse.Response.Error && bookResponse.Response.Error.ErrorCode !== 0) {
-                // Special handling for "Book not allowed" error -> Retry as LCC if needed
-                if (bookResponse.Response.Error.ErrorCode === 2) {
-                    console.log("Paymm: Non-LCC Book rejected. Retrying as Ticket (LCC flow)...");
-                    const lccPayload = {
-                        PreferredCurrency: null,
-                        AgentReferenceNo: `PAYMM_${Date.now()}`,
-                        Passengers,
-                        EndUserIp: endUserIp,
-                        TraceId,
-                        ResultIndex,
-                        IsPriceChangeAccepted: IsPriceChangeAccepted || false
-                    };
-                    const retryResponse = await tboService.ticketLCC(lccPayload);
-
-                    // Debug: Save Retry Response
-                    debugData.retryTicketResponse = retryResponse;
-                    try {
-                        fs.writeFileSync(path.join(__dirname, '../response.json'), JSON.stringify(debugData, null, 2));
-                    } catch (err) { console.error("Error writing response.json (Retry)", err); }
-
-                    return res.status(200).json(retryResponse);
-                }
-
                 console.error("Paymm: Non-LCC Book Step Failed", JSON.stringify(bookResponse));
                 return res.status(400).json(bookResponse);
             }
@@ -372,10 +353,38 @@ const bookFlight = async (req, res) => {
     }
 };
 
+const getBookingDetails = async (req, res) => {
+    try {
+        const { PNR, BookingId, TraceId, FirstName, LastName } = req.body;
+        // User IP is required either from body or env
+        const EndUserIp = process.env.END_USER_IP;
+
+        if (!BookingId && !PNR && !TraceId) {
+            return res.status(400).json({ error: 'At least one of BookingId, PNR, or TraceId is required.' });
+        }
+
+        const payload = {
+            EndUserIp,
+            BookingId,
+            PNR,
+            TraceId,
+            FirstName,
+            LastName
+        };
+
+        const data = await tboService.getBookingDetails(payload);
+        res.json(data);
+    } catch (error) {
+        console.error('Get Booking Details Error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch booking details' });
+    }
+}
+
 module.exports = {
     search,
     getFareRule,
     getFareQuote,
     getSSR,
-    bookFlight
+    bookFlight,
+    getBookingDetails
 };

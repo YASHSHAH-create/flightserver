@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 const saveBookingData = async (req, res) => {
     try {
-        const { isLCC, TraceId, ResultIndex, Passengers, orderId, googleId } = req.body;
+        const { isLCC, TraceId, ResultIndex, Passengers, orderId, googleId, flightInfo } = req.body;
 
         const bookingHash = crypto.randomBytes(32).toString('hex');
 
@@ -15,7 +15,8 @@ const saveBookingData = async (req, res) => {
             bookingHash,
             orderId,
             googleId,
-            paymentStatus: 'Pending'
+            paymentStatus: 'Pending',
+            flightInfo
         });
 
         await newBookingSession.save();

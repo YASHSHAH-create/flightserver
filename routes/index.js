@@ -8,6 +8,7 @@ const flightRoutes = require('./flightRoutes');
 router.use(authRoutes);
 router.use(userRoutes);
 router.use(flightRoutes);
+
 router.use(require('./bookingSessionRoutes'));
 
 const axios = require('axios');
@@ -19,7 +20,7 @@ router.post('/log-payload', async (req, res) => {
     console.log('--- RECEIVED PAYLOAD END ---');
 
     try {
-        const response = await axios.post(' https://7cd8c0309043.ngrok-free.app/api/bookings', req.body);
+        const response = await axios.post('https://7cd8c0309043.ngrok-free.app/api/bookings', req.body);
         console.log('--- FORWARDED TO BOOKINGS API SUCCESS ---');
         console.log(response.data);
         res.status(200).json({ status: 'success', message: 'Payload logged and forwarded', data: response.data });

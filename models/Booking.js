@@ -6,7 +6,8 @@ const bookingSchema = new mongoose.Schema({
     pnr: { type: String },
     status: { type: String, default: 'Pending' }, // Pending, Confirmed, Failed
     amount: { type: Number },
-    flightDetails: { type: Object }, // Store snapshot of flight info
+    flightDetails: { type: Object }, // Store snapshot of flight info (technical)
+    flightInfo: { type: Object }, // Store displayable flight info (origin, dest, airline)
     passengerDetails: { type: Array },
     responseJson: { type: Object }, // Full API response for debugging
     createdAt: { type: Date, default: Date.now }

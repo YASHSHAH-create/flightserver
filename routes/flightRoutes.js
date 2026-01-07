@@ -11,5 +11,6 @@ router.post('/flights/fare-rule', ensureToken, flightController.getFareRule);
 router.post('/flights/fare-quote', ensureToken, flightController.getFareQuote);
 router.post('/flights/ssr', ensureToken, flightController.getSSR);
 router.post('/flights/book', ensureToken, flightController.bookFlight);
+router.post('/flights/booking-details', ensureToken, flightController.getBookingDetails);
 
 module.exports = router;
