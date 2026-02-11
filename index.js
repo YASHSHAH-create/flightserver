@@ -7,6 +7,21 @@ const MongoStore = require('connect-mongo').default;
 const connectDB = require('./config/db');
 const configurePassport = require('./config/passport');
 const routes = require('./routes'); // Automagically finds index.js
+const cron = require('node-cron');
+const { authenticate } = require('./services/tboService');
+
+// Schedule token refresh at 10 PM every day
+cron.schedule('0 22 * * *', async () => {
+    console.log('Running scheduled token refresh at 10 PM...');
+    try {
+        await authenticate();
+        console.log('Token refreshed successfully.');
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+    }
+}, {
+    timezone: "Asia/Kolkata"
+});
 
 const app = express();
 const PORT = process.env.PORT || 3201;
