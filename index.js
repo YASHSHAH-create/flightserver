@@ -23,6 +23,85 @@ cron.schedule('0 22 * * *', async () => {
     timezone: "Asia/Kolkata"
 });
 
+// Schedule token refresh at 3 AM every day
+cron.schedule('0 3 * * *', async () => {
+    console.log('Running scheduled token refresh at 3 AM...');
+    try {
+        await authenticate();
+        console.log('Token refreshed successfully.');
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+    }
+}, {
+    timezone: "Asia/Kolkata"
+});
+
+// Function to calculate and log time remaining until next 10 PM IST
+const logTimeUntilRefresh = () => {
+    const now = new Date();
+
+    // Get current time in IST
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
+    });
+
+    const parts = formatter.formatToParts(now);
+    const dateParts = {};
+    parts.forEach(({ type, value }) => { dateParts[type] = value; });
+
+    // Construct a Date object treating the IST time as local time for calculation
+    // Note: Month in Date constructor is 0-indexed if using arguments, but we are using string parsing or manual parts
+    // safer to use arguments: new Date(year, monthIndex, day, hours, minutes, seconds)
+
+    const nowIST = new Date(
+        parseInt(dateParts.year),
+        parseInt(dateParts.month) - 1,
+        parseInt(dateParts.day),
+        parseInt(dateParts.hour),
+        parseInt(dateParts.minute),
+        parseInt(dateParts.second)
+    );
+
+    // define scheduled times
+    const scheduledHours = [3, 22];
+    let nextRefreshTime = null;
+
+    // Check today's scheduled times
+    for (const h of scheduledHours) {
+        let t = new Date(nowIST);
+        t.setHours(h, 0, 0, 0);
+        if (t > nowIST) {
+            nextRefreshTime = t;
+            break;
+        }
+    }
+
+    // If no more refreshes today, pick the first one tomorrow
+    if (!nextRefreshTime) {
+        let t = new Date(nowIST);
+        t.setDate(t.getDate() + 1);
+        t.setHours(scheduledHours[0], 0, 0, 0);
+        nextRefreshTime = t;
+    }
+
+    const diff = nextRefreshTime - nowIST;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    console.log(`[Token Refresh Timer] Time remaining untill token refresh: ${hours} hours and ${minutes} minutes`);
+};
+
+// Log immediately and then every minute
+logTimeUntilRefresh();
+setInterval(logTimeUntilRefresh, 60 * 1000);
+
 const app = express();
 const PORT = process.env.PORT || 3201;
 

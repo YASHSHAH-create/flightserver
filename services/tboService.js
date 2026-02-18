@@ -43,7 +43,7 @@ const searchFlights = async (payload) => {
         const response = await axios.post(process.env.SEARCH_API_URL, payload);
 
         if (response.data && response.data.Error && response.data.Error.ErrorCode !== 0) {
-            if (response.data.Error.ErrorMessage.includes("Session is not valid")) {
+            if (response.data.Error.ErrorMessage && response.data.Error.ErrorMessage.includes("Session is not valid")) {
                 console.log("Session invalid, re-authenticating...");
                 await authenticate();
                 payload.TokenId = tokenId;
@@ -64,7 +64,7 @@ const getFareRule = async (payload) => {
         const response = await axios.post(process.env.FARE_RULE_API_URL, payload);
 
         if (response.data && response.data.Error && response.data.Error.ErrorCode !== 0) {
-            if (response.data.Error.ErrorMessage.includes("Session is not valid")) {
+            if (response.data.Error.ErrorMessage && response.data.Error.ErrorMessage.includes("Session is not valid")) {
                 await authenticate();
                 payload.TokenId = tokenId;
                 const retryResponse = await axios.post(process.env.FARE_RULE_API_URL, payload);
@@ -86,7 +86,7 @@ const getFareQuote = async (payload) => {
         if (response.data && response.data.Response && response.data.Response.Error && response.data.Response.Error.ErrorCode !== 0) {
             // Check for Session Invalid OR Generic Supplier Error (28) which sometimes fixes with re-auth
             const errMsg = response.data.Response.Error.ErrorMessage;
-            if (errMsg.includes("Session is not valid") || response.data.Response.Error.ErrorCode === 28) {
+            if ((errMsg && errMsg.includes("Session is not valid")) || response.data.Response.Error.ErrorCode === 28) {
                 console.log(`Encountered Error ${response.data.Response.Error.ErrorCode}, re-authenticating...`);
                 await authenticate();
                 payload.TokenId = tokenId;
@@ -107,7 +107,7 @@ const getSSR = async (payload) => {
         const response = await axios.post(process.env.SSR_API_URL, payload);
 
         if (response.data && response.data.Response && response.data.Response.Error && response.data.Response.Error.ErrorCode !== 0) {
-            if (response.data.Response.Error.ErrorMessage.includes("Session is not valid")) {
+            if (response.data.Response.Error.ErrorMessage && response.data.Response.Error.ErrorMessage.includes("Session is not valid")) {
                 await authenticate();
                 payload.TokenId = tokenId;
                 const retryResponse = await axios.post(process.env.SSR_API_URL, payload);
@@ -127,32 +127,88 @@ const ticketLCC = async (payload) => {
     const TBO_TICKET_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket";
 
     console.log('Sending LCC Ticket request:', JSON.stringify(payload, null, 2));
-    const response = await axios.post(TBO_TICKET_URL, payload);
-    return response.data;
+    try {
+        const response = await axios.post(TBO_TICKET_URL, payload);
+
+        const error = response.data.Error || (response.data.Response && response.data.Response.Error);
+        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+            console.log("Session invalid in ticketLCC, re-authenticating...");
+            await authenticate();
+            payload.TokenId = tokenId;
+            const retryResponse = await axios.post(TBO_TICKET_URL, payload);
+            return retryResponse.data;
+        }
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 const bookNonLCC = async (payload) => {
     payload.TokenId = await getToken();
     const TBO_BOOK_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Book";
     console.log('Sending Non-LCC Book request:', JSON.stringify(payload, null, 2));
-    const response = await axios.post(TBO_BOOK_URL, payload);
-    return response.data;
+    try {
+        const response = await axios.post(TBO_BOOK_URL, payload);
+
+        const error = response.data.Error || (response.data.Response && response.data.Response.Error);
+        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+            console.log("Session invalid in bookNonLCC, re-authenticating...");
+            await authenticate();
+            payload.TokenId = tokenId;
+            const retryResponse = await axios.post(TBO_BOOK_URL, payload);
+            return retryResponse.data;
+        }
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 const ticketNonLCC = async (payload) => {
     payload.TokenId = await getToken();
     const TBO_TICKET_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket";
     console.log('Sending Non-LCC Ticket request:', JSON.stringify(payload, null, 2));
-    const response = await axios.post(TBO_TICKET_URL, payload);
-    return response.data;
+    try {
+        const response = await axios.post(TBO_TICKET_URL, payload);
+
+        const error = response.data.Error || (response.data.Response && response.data.Response.Error);
+        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+            console.log("Session invalid in ticketNonLCC, re-authenticating...");
+            await authenticate();
+            payload.TokenId = tokenId;
+            const retryResponse = await axios.post(TBO_TICKET_URL, payload);
+            return retryResponse.data;
+        }
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 const getBookingDetails = async (payload) => {
     payload.TokenId = await getToken();
     const TBO_GET_BOOKING_DETAILS_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetBookingDetails";
     console.log('Sending GetBookingDetails request:', JSON.stringify(payload, null, 2));
-    const response = await axios.post(TBO_GET_BOOKING_DETAILS_URL, payload);
-    return response.data;
+    try {
+        const response = await axios.post(TBO_GET_BOOKING_DETAILS_URL, payload);
+
+        const error = response.data.Error || (response.data.Response && response.data.Response.Error);
+        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+            console.log("Session invalid in getBookingDetails, re-authenticating...");
+            await authenticate();
+            payload.TokenId = tokenId;
+            const retryResponse = await axios.post(TBO_GET_BOOKING_DETAILS_URL, payload);
+            return retryResponse.data;
+        }
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = {
