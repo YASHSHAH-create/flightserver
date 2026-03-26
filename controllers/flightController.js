@@ -1,5 +1,6 @@
 const tboService = require('../services/tboService');
 const { formatDate, getClassCode, seatLetterToNumber } = require('../utils/helpers');
+const { transformFareQuote } = require('../utils/tboTransformer');
 const fs = require('fs');
 const path = require('path');
 
@@ -167,6 +168,21 @@ const getFareQuote = async (req, res) => {
 
         // Check for business error in response
         const hasError = data.Error && data.Error.ErrorCode !== 0;
+
+        if (!hasError && data.Results) {
+            try {
+                // Apply the transformer to get clean UI-friendly format
+                const cleanData = transformFareQuote(data);
+                
+                return res.json({ 
+                    success: true, 
+                    data: cleanData 
+                });
+            } catch (transformError) {
+                console.error("Transformer error:", transformError.message);
+                // Fallback to raw data if transformation fails
+            }
+        }
 
         res.json({ success: !hasError, data });
 

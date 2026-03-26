@@ -1,0 +1,13 @@
+{
+  "bookResponse": {
+    "Response": {
+      "Error": {
+        "ErrorCode": 3,
+        "ErrorMessage": "Book not allowed for LCCs. Please do Ticket directly."
+      },
+      "TraceId": "ef5e0004-1fb2-46fb-bac7-94272f6ed978",
+      "ResponseStatus": 3,
+      "Response": null
+    }
+  }
+}
