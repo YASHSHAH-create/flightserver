@@ -5,12 +5,15 @@ let tokenId = null;
 
 const authenticate = async () => {
     try {
-        const response = await axios.post(process.env.AUTH_API_URL, {
+        const authPayload = {
             ClientId: process.env.CLIENT_ID,
             UserName: process.env.USERNAME,
             Password: process.env.PASSWORD,
             EndUserIp: process.env.END_USER_IP
-        });
+        };
+        console.log("Authentication Credentials:", authPayload);
+        
+        const response = await axios.post(process.env.AUTH_API_URL, authPayload);
 
         if (response.data && response.data.TokenId) {
             tokenId = response.data.TokenId;
