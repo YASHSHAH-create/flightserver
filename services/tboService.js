@@ -8,7 +8,7 @@ const authenticate = async () => {
         const authPayload = {
             ClientId: process.env.CLIENT_ID,
             UserName: process.env.USERNAME,
-            Password: process.env.PASSWORD,
+            Password: "P@y@pi-47#5",
             EndUserIp: process.env.END_USER_IP
         };
         console.log("Authentication Credentials:", authPayload);
