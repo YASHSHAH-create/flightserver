@@ -394,6 +394,64 @@ const getBookingDetails = async (req, res) => {
         console.error('Get Booking Details Error:', error.message);
         res.status(500).json({ error: 'Failed to fetch booking details' });
     }
+};
+
+const getCalendarFare = async (req, res) => {
+    try {
+        const { JourneyType, PreferredAirlines, Segments, Sources } = req.body;
+        
+        // Basic validation
+        if (!Segments || Segments.length === 0) {
+            return res.status(400).json({ error: 'Segments parameter is required.' });
+        }
+
+        const payload = {
+            EndUserIp: process.env.END_USER_IP,
+            JourneyType: JourneyType || 1,
+            PreferredAirlines: PreferredAirlines || null,
+            Segments,
+            Sources: Sources || null
+        };
+
+        const data = await tboService.getCalendarFare(payload);
+        res.json({ success: true, data });
+    } catch (error) {
+        console.error('Get Calendar Fare Error:', error.message);
+        if (error.response) {
+            res.status(error.response.status).json({ success: false, error: error.response.data });
+        } else {
+            res.status(500).json({ success: false, error: 'Internal Server Error' });
+        }
+    }
+};
+
+const updateCalendarFareOfDay = async (req, res) => {
+    try {
+        const { JourneyType, PreferredAirlines, Segments, Sources } = req.body;
+        
+        // Basic validation
+        if (!Segments || Segments.length === 0) {
+            return res.status(400).json({ error: 'Segments parameter is required.' });
+        }
+
+        const payload = {
+            EndUserIp: process.env.END_USER_IP,
+            JourneyType: JourneyType || 1,
+            PreferredAirlines: PreferredAirlines || null,
+            Segments,
+            Sources: Sources || null
+        };
+
+        const data = await tboService.updateCalendarFareOfDay(payload);
+        res.json({ success: true, data });
+    } catch (error) {
+        console.error('Update Calendar Fare Of Day Error:', error.message);
+        if (error.response) {
+            res.status(error.response.status).json({ success: false, error: error.response.data });
+        } else {
+            res.status(500).json({ success: false, error: 'Internal Server Error' });
+        }
+    }
 }
 
 module.exports = {
@@ -402,5 +460,7 @@ module.exports = {
     getFareQuote,
     getSSR,
     bookFlight,
-    getBookingDetails
+    getBookingDetails,
+    getCalendarFare,
+    updateCalendarFareOfDay
 };

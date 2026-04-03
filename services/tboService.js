@@ -8,7 +8,7 @@ const authenticate = async () => {
         const authPayload = {
             ClientId: process.env.CLIENT_ID,
             UserName: process.env.USERNAME,
-            Password: "P@y@pi-47#5",
+            Password: process.env.PASSWORD,
             EndUserIp: process.env.END_USER_IP
         };
         console.log("Authentication Credentials:", authPayload);
@@ -214,6 +214,50 @@ const getBookingDetails = async (payload) => {
     }
 };
 
+const getCalendarFare = async (payload) => {
+    payload.TokenId = await getToken();
+    const TBO_GET_CALENDAR_FARE_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetCalendarFare";
+    console.log('Sending GetCalendarFare request:', JSON.stringify(payload, null, 2));
+    try {
+        const response = await axios.post(TBO_GET_CALENDAR_FARE_URL, payload);
+
+        const error = response.data.Error || (response.data.Response && response.data.Response.Error);
+        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+            console.log("Session invalid in getCalendarFare, re-authenticating...");
+            await authenticate();
+            payload.TokenId = tokenId;
+            const retryResponse = await axios.post(TBO_GET_CALENDAR_FARE_URL, payload);
+            return retryResponse.data;
+        }
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const updateCalendarFareOfDay = async (payload) => {
+    payload.TokenId = await getToken();
+    const TBO_UPDATE_CALENDAR_FARE_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/UpdateCalendarFareOfDay";
+    console.log('Sending UpdateCalendarFareOfDay request:', JSON.stringify(payload, null, 2));
+    try {
+        const response = await axios.post(TBO_UPDATE_CALENDAR_FARE_URL, payload);
+
+        const error = response.data.Error || (response.data.Response && response.data.Response.Error);
+        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+            console.log("Session invalid in updateCalendarFareOfDay, re-authenticating...");
+            await authenticate();
+            payload.TokenId = tokenId;
+            const retryResponse = await axios.post(TBO_UPDATE_CALENDAR_FARE_URL, payload);
+            return retryResponse.data;
+        }
+
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = {
     authenticate,
     getToken,
@@ -224,5 +268,7 @@ module.exports = {
     ticketLCC,
     bookNonLCC,
     ticketNonLCC,
-    getBookingDetails
+    getBookingDetails,
+    getCalendarFare,
+    updateCalendarFareOfDay
 };

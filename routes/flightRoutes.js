@@ -13,4 +13,8 @@ router.post('/flights/ssr', ensureToken, flightController.getSSR);
 router.post('/flights/book', ensureToken, flightController.bookFlight);
 router.post('/flights/booking-details', ensureToken, flightController.getBookingDetails);
 
+// Calendar Fare Routes
+router.post('/flights/calendar-fare', ensureToken, flightController.getCalendarFare);
+router.post('/flights/update-calendar-fare', ensureToken, flightController.updateCalendarFareOfDay);
+
 module.exports = router;
