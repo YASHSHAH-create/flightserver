@@ -1,5 +1,5 @@
 const tboService = require('../services/tboService');
-const { formatDate, getClassCode, seatLetterToNumber } = require('../utils/helpers');
+const { formatDate, getClassCode, seatLetterToNumber, sendTelegramNotification } = require('../utils/helpers');
 const { transformFareQuote } = require('../utils/tboTransformer');
 const fs = require('fs');
 const path = require('path');
@@ -256,6 +256,10 @@ const bookFlight = async (req, res) => {
                 fs.writeFileSync(path.join(__dirname, '../response.json'), JSON.stringify({ lccTicketResponse: data }, null, 2));
             } catch (err) { console.error("Error writing response.json", err); }
 
+            if (data?.Response?.Error?.ErrorCode === 0 && data?.Response?.Response?.FlightItinerary) {
+                sendTelegramNotification(data);
+            }
+
             return res.status(200).json(data);
         }
 
@@ -354,6 +358,10 @@ const bookFlight = async (req, res) => {
             try {
                 fs.writeFileSync(path.join(__dirname, '../response.json'), JSON.stringify(debugData, null, 2));
             } catch (err) { console.error("Error writing response.json (Ticket)", err); }
+
+            if (ticketResponse?.Response?.Error?.ErrorCode === 0 && ticketResponse?.Response?.Response?.FlightItinerary) {
+                sendTelegramNotification(ticketResponse);
+            }
 
             return res.status(200).json(ticketResponse);
         }

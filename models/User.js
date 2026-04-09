@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     name: { type: String },
     picture: { type: String },
     pushToken: { type: String },
+    expoPushToken: { type: String },
     createdAt: { type: Date, default: Date.now }
 });
 

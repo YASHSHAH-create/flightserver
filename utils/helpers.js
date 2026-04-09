@@ -5,6 +5,9 @@ const {
     getCompartmentEnum,
     getWayTypeEnum
 } = require('./enums');
+const axios = require('axios');
+const puppeteer = require('puppeteer');
+const FormData = require('form-data');
 
 // Helper to format date from DDMMYYYY to YYYY-MM-DDT00:00:00
 const formatDate = (dateStr) => {
@@ -207,6 +210,188 @@ const seatLetterToNumber = (letter) => {
     return map[letter?.toUpperCase()] || 0;
 };
 
+const sendTelegramNotification = async (bookingData) => {
+    try {
+        const token = process.env.TELEGRAM_BOT_TOKEN || "8656995629:AAEHExGEVOfXZIF0aLza0T86wbwOShPdxp8";
+        let chatId = process.env.TELEGRAM_CHAT_ID;
+        
+        if (!chatId) {
+            // Try to fetch from getUpdates
+            const { data: updateData } = await axios.get(`https://api.telegram.org/bot${token}/getUpdates`);
+            if (updateData.ok && updateData.result.length > 0) {
+                // Get the last message's chat ID
+                const lastUpdate = updateData.result[updateData.result.length - 1];
+                chatId = lastUpdate.message?.chat?.id || lastUpdate.channel_post?.chat?.id;
+            }
+        }
+
+        if (!chatId) {
+            console.warn('Telegram Chat ID not found. Set TELEGRAM_CHAT_ID or send a message to the bot first.');
+            return;
+        }
+
+        const itinerary = bookingData?.Response?.Response?.FlightItinerary;
+        if (!itinerary) return;
+
+        const pnr = itinerary.PNR;
+        const bookingId = itinerary.BookingId;
+        
+        let msg = `🎉 <b>Flight Booked Successfully!</b>\n\n`;
+        msg += `<b>PNR:</b> ${pnr}\n`;
+        msg += `<b>Booking ID:</b> ${bookingId}\n\n`;
+
+        msg += `👤 <b>Passenger Details:</b>\n`;
+        itinerary.Passenger?.forEach(p => {
+            msg += `- ${p.Title} ${p.FirstName} ${p.LastName}\n`;
+            if (p.Email) msg += `  Email: ${p.Email}\n`;
+            if (p.ContactNo) msg += `  Phone: ${p.ContactNo}\n`;
+        });
+        
+        msg += `\n✈️ <b>Flight Details:</b>\n`;
+        itinerary.Segments?.forEach(seg => {
+            msg += `- <b>${seg.Airline?.AirlineName} (${seg.Airline?.AirlineCode} ${seg.Airline?.FlightNumber})</b>\n`;
+            msg += `  ${seg.Origin?.Airport?.AirportCode} ➔ ${seg.Destination?.Airport?.AirportCode}\n`;
+            msg += `  Dep: ${new Date(seg.Origin?.DepTime).toLocaleString()}\n`;
+            msg += `  Arr: ${new Date(seg.Destination?.ArrTime).toLocaleString()}\n`;
+        });
+
+        // 1. Send the text message first
+        await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+            chat_id: chatId,
+            text: msg,
+            parse_mode: 'HTML'
+        });
+
+        // 2. Generate PDF
+        const htmlTemplate = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; padding: 40px; color: #333; margin: 0; }
+                .ticket { background: #fff; max-width: 800px; margin: 0 auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
+                .header { background: #1e3a8a; color: #fff; padding: 30px; text-align: center; }
+                .header h1 { margin: 0; font-size: 28px; letter-spacing: 2px; text-transform: uppercase; }
+                .header p { margin: 10px 0 0; font-size: 16px; opacity: 0.9; }
+                .content { padding: 30px; }
+                .row { display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+                .row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+                .col { flex: 1; }
+                .title { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+                .value { font-size: 18px; font-weight: 600; color: #111827; }
+                h2 { color: #1e3a8a; font-size: 20px; margin-top: 0; border-bottom: 2px solid #ebf8ff; padding-bottom: 10px; margin-bottom: 20px; }
+                .segment { background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #3b82f6; }
+                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e7eb; }
+                th { color: #6b7280; font-weight: 600; font-size: 14px; }
+                td { font-size: 15px; color: #374151; }
+                .tag { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+                .footer { background: #f1f5f9; padding: 20px; text-align: center; font-size: 14px; color: #64748b; border-top: 1px dashed #cbd5e1; }
+            </style>
+        </head>
+        <body>
+            <div class="ticket">
+                <div class="header">
+                    <h1>E-Ticket Confirmed</h1>
+                    <p>Thank you for booking with us! Have a safe journey.</p>
+                </div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col">
+                            <div class="title">Booking ID</div>
+                            <div class="value">${bookingId}</div>
+                        </div>
+                        <div class="col" style="text-align: right;">
+                            <div class="title">PNR Number</div>
+                            <div class="value" style="color: #2563eb; font-size: 24px;">${pnr}</div>
+                        </div>
+                    </div>
+                    
+                    <h2>✈️ Flight Itinerary</h2>
+                    ${itinerary.Segments?.map(seg => `
+                    <div class="segment">
+                        <div class="row" style="border:none; padding:0; margin:0;">
+                            <div class="col">
+                                <div class="value">${seg.Airline?.AirlineName}</div>
+                                <div class="title">${seg.Airline?.AirlineCode} - ${seg.Airline?.FlightNumber}</div>
+                            </div>
+                            <div class="col" style="text-align: right;">
+                                <span class="tag">${seg.CabinClass === 2 ? 'Business' : (seg.CabinClass === 6 ? 'First' : 'Economy')}</span>
+                            </div>
+                        </div>
+                        <div class="row" style="border:none; padding:15px 0 0; margin:0; align-items:center;">
+                            <div class="col">
+                                <div class="value">${new Date(seg.Origin?.DepTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                <div class="title">${new Date(seg.Origin?.DepTime).toLocaleDateString()}</div>
+                                <div style="font-weight: bold; margin-top:5px;">${seg.Origin?.Airport?.AirportCode}</div>
+                                <div class="title">${seg.Origin?.Airport?.CityName || ''}</div>
+                            </div>
+                            <div class="col" style="text-align: center; color:#94a3b8;">
+                                <div>───── ✈ ─────</div>
+                                <div class="title">${seg.Duration} mins</div>
+                            </div>
+                            <div class="col" style="text-align: right;">
+                                <div class="value">${new Date(seg.Destination?.ArrTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                <div class="title">${new Date(seg.Destination?.ArrTime).toLocaleDateString()}</div>
+                                <div style="font-weight: bold; margin-top:5px;">${seg.Destination?.Airport?.AirportCode}</div>
+                                <div class="title">${seg.Destination?.Airport?.CityName || ''}</div>
+                            </div>
+                        </div>
+                    </div>`).join('')}
+
+                    <h2>👤 Passenger Details</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Ticket No</th>
+                                <th>Type</th>
+                                <th style="text-align:center;">QR Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itinerary.Passenger?.map(p => {
+                                const barcodeContent = p.BarcodeDetails?.Barcode?.[0]?.Content || `PNR:${pnr} Name:${p.FirstName} ${p.LastName}`;
+                                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(barcodeContent)}`;
+                                return `
+                            <tr>
+                                <td><b>${p.Title} ${p.FirstName} ${p.LastName}</b><br><span style="font-size:12px;color:#6b7280;">${p.Email || ''} ${p.ContactNo || ''}</span></td>
+                                <td>${p.Ticket?.TicketNumber || 'Pending'}</td>
+                                <td>${p.PaxType === 1 ? 'Adult' : p.PaxType === 2 ? 'Child' : 'Infant'}</td>
+                                <td style="text-align:center;"><img src="${qrUrl}" width="60" height="60" alt="QR" style="border-radius:4px;" /></td>
+                            </tr>`}).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footer">
+                    <p>This is a computer-generated document. No signature is required.</p>
+                </div>
+            </div>
+        </body>
+        </html>`;
+
+        const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox'] });
+        const page = await browser.newPage();
+        await page.setContent(htmlTemplate, { waitUntil: 'networkidle0' });
+        const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+        await browser.close();
+
+        // 3. Send PDF Document
+        const form = new FormData();
+        form.append('chat_id', chatId);
+        form.append('document', Buffer.from(pdfBuffer), { filename: `Ticket-${pnr}.pdf`, contentType: 'application/pdf' });
+        
+        await axios.post(`https://api.telegram.org/bot${token}/sendDocument`, form, {
+            headers: form.getHeaders()
+        });
+
+        console.log('Telegram notification and PDF Ticket sent successfully to', chatId);
+    } catch (error) {
+        console.error('Error sending Telegram PDF notification:', error.message);
+    }
+};
+
 module.exports = {
     formatDate,
     getClassCode,
@@ -214,5 +399,6 @@ module.exports = {
     processRowSeats,
     enhanceSeatInfo,
     processSSRResponse,
-    seatLetterToNumber
+    seatLetterToNumber,
+    sendTelegramNotification
 };
