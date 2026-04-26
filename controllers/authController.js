@@ -40,7 +40,7 @@ const User = require('../models/User');
 
 const syncGoogleUser = async (req, res) => {
     try {
-        const { googleId, email, name, picture, pushToken } = req.body;
+        const { googleId, email, name, picture, pushToken, expoPushToken } = req.body;
 
         if (!googleId || !email) {
             return res.status(400).json({ error: 'Missing required fields' });
@@ -55,7 +55,8 @@ const syncGoogleUser = async (req, res) => {
                 email,
                 name,
                 picture,
-                pushToken
+                pushToken,
+                expoPushToken: expoPushToken || pushToken
             });
             await user.save();
         } else {
@@ -65,6 +66,11 @@ const syncGoogleUser = async (req, res) => {
             user.picture = picture;
             if (pushToken) {
                 user.pushToken = pushToken;
+            }
+            if (expoPushToken) {
+                user.expoPushToken = expoPushToken;
+            } else if (pushToken) {
+                user.expoPushToken = pushToken;
             }
             await user.save();
         }
