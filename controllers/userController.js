@@ -201,7 +201,7 @@ const getBookingDetails = async (req, res) => {
                 const tboBookingId = booking.responseJson?.Response?.Response?.BookingId ||
                     booking.responseJson?.Response?.BookingId || // Sometimes structure varies
                     (booking.responseJson?.BookingId);
-
+                 
                 const pnr = booking.pnr;
                 const leadPax = booking.passengerDetails?.find(p => p.IsLeadPax) || booking.passengerDetails?.[0];
                 const lastName = leadPax?.LastName || '';

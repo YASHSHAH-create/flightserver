@@ -29,8 +29,11 @@ const sendPushNotificationsAsync = async (messages) => {
 
             if (tickets && Array.isArray(tickets)) {
                 tickets.forEach((ticket, index) => {
-                    if (ticket.status === 'error' && ticket.details && ticket.details.error === 'DeviceNotRegistered') {
-                        invalidTokens.push(chunk[index].to);
+                    if (ticket.status === 'error') {
+                        console.error(`[Push Error for ${chunk[index].to}]:`, ticket.message, ticket.details);
+                        if (ticket.details && ticket.details.error === 'DeviceNotRegistered') {
+                            invalidTokens.push(chunk[index].to);
+                        }
                     }
                 });
             }
