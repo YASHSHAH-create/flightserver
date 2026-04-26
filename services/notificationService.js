@@ -27,6 +27,8 @@ const sendPushNotificationsAsync = async (messages) => {
             const tickets = response.data.data;
             const invalidTokens = [];
 
+            console.log('[Expo Tickets Response]:', JSON.stringify(tickets, null, 2));
+
             if (tickets && Array.isArray(tickets)) {
                 tickets.forEach((ticket, index) => {
                     if (ticket.status === 'error') {
