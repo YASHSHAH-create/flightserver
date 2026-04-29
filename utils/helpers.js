@@ -213,20 +213,18 @@ const seatLetterToNumber = (letter) => {
 const sendTelegramNotification = async (bookingData) => {
     try {
         const token = process.env.TELEGRAM_BOT_TOKEN || "8656995629:AAEHExGEVOfXZIF0aLza0T86wbwOShPdxp8";
-        let chatId = process.env.TELEGRAM_CHAT_ID;
         
-        if (!chatId) {
-            // Try to fetch from getUpdates
-            const { data: updateData } = await axios.get(`https://api.telegram.org/bot${token}/getUpdates`);
-            if (updateData.ok && updateData.result.length > 0) {
-                // Get the last message's chat ID
-                const lastUpdate = updateData.result[updateData.result.length - 1];
-                chatId = lastUpdate.message?.chat?.id || lastUpdate.channel_post?.chat?.id;
-            }
+        // Ensure telegramBot dependency is required inline or globally
+        const { getSubscribers } = require('../services/telegramBot');
+        let chatIds = getSubscribers();
+        
+        // Fallback to env chat ID if no one has subscribed yet
+        if (chatIds.length === 0 && process.env.TELEGRAM_CHAT_ID) {
+            chatIds.push(process.env.TELEGRAM_CHAT_ID);
         }
 
-        if (!chatId) {
-            console.warn('Telegram Chat ID not found. Set TELEGRAM_CHAT_ID or send a message to the bot first.');
+        if (chatIds.length === 0) {
+            console.warn('No Telegram subscribers found. Send /start to the bot to subscribe.');
             return;
         }
 
@@ -255,14 +253,7 @@ const sendTelegramNotification = async (bookingData) => {
             msg += `  Arr: ${new Date(seg.Destination?.ArrTime).toLocaleString()}\n`;
         });
 
-        // 1. Send the text message first
-        await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
-            chat_id: chatId,
-            text: msg,
-            parse_mode: 'HTML'
-        });
-
-        // 2. Generate PDF
+        // Generate PDF
         const htmlTemplate = `
         <!DOCTYPE html>
         <html lang="en">
@@ -377,16 +368,30 @@ const sendTelegramNotification = async (bookingData) => {
         const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
         await browser.close();
 
-        // 3. Send PDF Document
-        const form = new FormData();
-        form.append('chat_id', chatId);
-        form.append('document', Buffer.from(pdfBuffer), { filename: `Ticket-${pnr}.pdf`, contentType: 'application/pdf' });
-        
-        await axios.post(`https://api.telegram.org/bot${token}/sendDocument`, form, {
-            headers: form.getHeaders()
-        });
+        // Loop through all subscribed Chat IDs and send the notification
+        for (const chatId of chatIds) {
+            try {
+                // 1. Send the text message
+                await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    chat_id: chatId,
+                    text: msg,
+                    parse_mode: 'HTML'
+                });
 
-        console.log('Telegram notification and PDF Ticket sent successfully to', chatId);
+                // 2. Send PDF Document
+                const form = new FormData();
+                form.append('chat_id', chatId);
+                form.append('document', Buffer.from(pdfBuffer), { filename: `Ticket-${pnr}.pdf`, contentType: 'application/pdf' });
+                
+                await axios.post(`https://api.telegram.org/bot${token}/sendDocument`, form, {
+                    headers: form.getHeaders()
+                });
+
+                console.log(`Telegram notification and PDF Ticket sent successfully to ${chatId}`);
+            } catch (err) {
+                console.error(`Failed to send Telegram notification to ${chatId}:`, err.message);
+            }
+        }
     } catch (error) {
         console.error('Error sending Telegram PDF notification:', error.message);
     }

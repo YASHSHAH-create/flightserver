@@ -3,12 +3,539 @@
     "Response": {
       "B2B2BStatus": false,
       "Error": {
-        "ErrorCode": 5,
-        "ErrorMessage": "Your session (TraceId) is expired."
+        "ErrorCode": 0,
+        "ErrorMessage": ""
       },
-      "ResponseStatus": 4,
-      "TraceId": "99fc398e-a5e2-4c7e-b7a6-971746576443",
-      "Response": null
+      "ResponseStatus": 1,
+      "TraceId": "ce125331-8353-422c-9345-393ba6d6f631",
+      "Response": {
+        "ItineraryChangeList": null,
+        "PNR": "D1ZMWC",
+        "BookingId": 2116475,
+        "SSRDenied": false,
+        "SSRMessage": null,
+        "Status": 1,
+        "IsPriceChanged": false,
+        "IsTimeChanged": false,
+        "FlightItinerary": {
+          "CommentDetails": null,
+          "FareClassification": "Value#rgb(255,213,128)",
+          "IsAutoReissuanceAllowed": true,
+          "IsPartialVoidAllowed": true,
+          "IsSeatsBooked": true,
+          "IssuancePcc": "APIRTLOTAAPI",
+          "JourneyType": 1,
+          "SearchCombinationType": 2,
+          "SupplierFareClasses": "Value",
+          "TBOConfNo": "TBFWWNUT1",
+          "TBOTripID": null,
+          "TripIndicator": 1,
+          "BookingAllowedForRoamer": true,
+          "BookingId": 2116475,
+          "IsCouponAppilcable": true,
+          "IsManual": false,
+          "PNR": "D1ZMWC",
+          "AgentReferenceNo": "PAYMM_1777282987322",
+          "IsDomestic": true,
+          "ResultFareType": "RegularFare",
+          "Source": 14,
+          "Origin": "DEL",
+          "Destination": "MAA",
+          "AirlineCode": "IX",
+          "ValidatingAirlineCode": "IX",
+          "AirlineRemark": "",
+          "IsLCC": true,
+          "NonRefundable": false,
+          "FareType": "PUB",
+          "CreditNoteNo": null,
+          "Fare": {
+            "CFARAmount": 0,
+            "DCFARAmount": 0,
+            "ServiceFeeDisplayType": 0,
+            "Currency": "INR",
+            "BaseFare": 4000,
+            "Tax": 1664,
+            "TaxBreakup": [
+              {
+                "key": "K3",
+                "value": 252
+              },
+              {
+                "key": "YR",
+                "value": 75
+              },
+              {
+                "key": "YQTax",
+                "value": 749
+              },
+              {
+                "key": "TotalTax",
+                "value": 1664
+              },
+              {
+                "key": "OtherTaxes",
+                "value": 588
+              }
+            ],
+            "YQTax": 749,
+            "AdditionalTxnFeeOfrd": 0,
+            "AdditionalTxnFeePub": 0,
+            "PGCharge": 0,
+            "OtherCharges": 354,
+            "ChargeBU": [
+              {
+                "key": "TBOMARKUP",
+                "value": 0
+              },
+              {
+                "key": "GLOBALPROCUREMENTCHARGE",
+                "value": 0
+              },
+              {
+                "key": "OTHERCHARGE",
+                "value": 354
+              },
+              {
+                "key": "CONVENIENCECHARGE",
+                "value": 0
+              }
+            ],
+            "Discount": 0,
+            "PublishedFare": 8468,
+            "CommissionEarned": 0,
+            "PLBEarned": 0,
+            "IncentiveEarned": 0,
+            "OfferedFare": 8468,
+            "TdsOnCommission": 0,
+            "TdsOnPLB": 0,
+            "TdsOnIncentive": 0,
+            "ServiceFee": 0,
+            "TotalBaggageCharges": 2000,
+            "TotalMealCharges": 0,
+            "TotalSeatCharges": 450,
+            "TotalSpecialServiceCharges": 0
+          },
+          "CreditNoteCreatedOn": null,
+          "Passenger": [
+            {
+              "BarcodeDetails": {
+                "Id": 3412802,
+                "Barcode": [
+                  {
+                    "Index": 1,
+                    "Format": "PDF417",
+                    "Content": "M1SRIVASTAV/SACHJN     D1ZMWC DELMAAIX 1070 117Y008E0000 000",
+                    "BarCodeInBase64": null,
+                    "JourneyWayType": 3
+                  }
+                ]
+              },
+              "DocumentDetails": null,
+              "GuardianDetails": null,
+              "IsReissued": false,
+              "SegmentDetails": [
+                {
+                  "CabinBaggage": {
+                    "FreeText": "7 KG",
+                    "Unit": "KG",
+                    "Value": "7"
+                  },
+                  "CheckedInBaggage": {
+                    "FreeText": "15 KG",
+                    "Unit": "KG",
+                    "Value": "15"
+                  },
+                  "FlightInfoIndex": "1"
+                },
+                {
+                  "CabinBaggage": {
+                    "FreeText": "7 KG",
+                    "Unit": "KG",
+                    "Value": "7"
+                  },
+                  "CheckedInBaggage": {
+                    "FreeText": "15 KG",
+                    "Unit": "KG",
+                    "Value": "15"
+                  },
+                  "FlightInfoIndex": "2"
+                }
+              ],
+              "PaxId": 3412802,
+              "Title": "Mr",
+              "FirstName": "Sachjn",
+              "LastName": "Srivastav",
+              "PaxType": 1,
+              "DateOfBirth": "1990-01-23T00:00:00",
+              "Gender": 1,
+              "IsPANRequired": false,
+              "IsPassportRequired": false,
+              "PAN": "",
+              "PassportNo": "",
+              "AddressLine1": "123, Tech Park",
+              "Fare": {
+                "CFARAmount": 0,
+                "DCFARAmount": 0,
+                "ServiceFeeDisplayType": 0,
+                "Currency": "INR",
+                "BaseFare": 4000,
+                "Tax": 1664,
+                "TaxBreakup": [
+                  {
+                    "key": "K3",
+                    "value": 252
+                  },
+                  {
+                    "key": "YR",
+                    "value": 75
+                  },
+                  {
+                    "key": "YQTax",
+                    "value": 749
+                  },
+                  {
+                    "key": "TotalTax",
+                    "value": 1664
+                  },
+                  {
+                    "key": "OtherTaxes",
+                    "value": 588
+                  }
+                ],
+                "YQTax": 749,
+                "AdditionalTxnFeeOfrd": 0,
+                "AdditionalTxnFeePub": 0,
+                "PGCharge": 0,
+                "OtherCharges": 354,
+                "ChargeBU": [
+                  {
+                    "key": "TBOMARKUP",
+                    "value": 0
+                  },
+                  {
+                    "key": "GLOBALPROCUREMENTCHARGE",
+                    "value": 0
+                  },
+                  {
+                    "key": "OTHERCHARGE",
+                    "value": 354
+                  },
+                  {
+                    "key": "CONVENIENCECHARGE",
+                    "value": 0
+                  }
+                ],
+                "Discount": 0,
+                "PublishedFare": 8468,
+                "CommissionEarned": 0,
+                "PLBEarned": 0,
+                "IncentiveEarned": 0,
+                "OfferedFare": 8468,
+                "TdsOnCommission": 0,
+                "TdsOnPLB": 0,
+                "TdsOnIncentive": 0,
+                "ServiceFee": 0,
+                "TotalBaggageCharges": 2000,
+                "TotalMealCharges": 0,
+                "TotalSeatCharges": 450,
+                "TotalSpecialServiceCharges": 0
+              },
+              "City": "Bangalore",
+              "CountryCode": "IN",
+              "CountryName": "India",
+              "Nationality": "IN",
+              "ContactNo": "9876543210",
+              "Email": "john.doe@example.com",
+              "IsLeadPax": true,
+              "FFAirlineCode": null,
+              "FFNumber": "",
+              "Baggage": [
+                {
+                  "AirlineCode": "IX",
+                  "FlightNumber": "1070",
+                  "WayType": 2,
+                  "Code": "SBHA",
+                  "Description": 2,
+                  "Weight": 1,
+                  "Currency": "INR",
+                  "Price": 2000,
+                  "Origin": "DEL",
+                  "Destination": "MAA"
+                }
+              ],
+              "SeatDynamic": [
+                {
+                  "AirlineCode": "IX",
+                  "FlightNumber": "1070",
+                  "CraftType": "7M8",
+                  "Origin": "DEL",
+                  "Destination": "BLR",
+                  "AvailablityType": 1,
+                  "Description": 2,
+                  "Code": "8E",
+                  "RowNo": "8",
+                  "SeatNo": "E",
+                  "SeatType": 3,
+                  "SeatWayType": 1,
+                  "Compartment": 1,
+                  "Deck": 1,
+                  "Currency": "INR",
+                  "Price": 450
+                }
+              ],
+              "Ssr": [],
+              "Ticket": {
+                "TicketId": 2416746,
+                "TicketNumber": "D1ZMWC",
+                "IssueDate": "2026-04-27T15:13:13",
+                "ValidatingAirline": "098",
+                "Remarks": "",
+                "ServiceFeeDisplayType": "ShowInTax",
+                "Status": "OK",
+                "ConjunctionNumber": "",
+                "TicketType": "N"
+              },
+              "SegmentAdditionalInfo": [
+                {
+                  "FareBasis": "KCRA000",
+                  "NVA": "",
+                  "NVB": "",
+                  "Baggage": "15 KG|1",
+                  "Meal": "0 Platter",
+                  "Seat": "8E",
+                  "SpecialService": "",
+                  "CabinBaggage": "7 KG"
+                },
+                {
+                  "FareBasis": "KCRA000",
+                  "NVA": "",
+                  "NVB": "",
+                  "Baggage": "15 KG",
+                  "Meal": "0 Platter",
+                  "Seat": "",
+                  "SpecialService": "",
+                  "CabinBaggage": "7 KG"
+                }
+              ]
+            }
+          ],
+          "CancellationCharges": null,
+          "Segments": [
+            {
+              "Baggage": "15Kg",
+              "CabinBaggage": "7Kg",
+              "CabinClass": 2,
+              "SupplierFareClass": null,
+              "TripIndicator": 1,
+              "SegmentIndicator": 1,
+              "Airline": {
+                "AirlineCode": "IX",
+                "AirlineName": "Air India Express",
+                "FlightNumber": "1070",
+                "FareClass": "KC",
+                "OperatingCarrier": ""
+              },
+              "AirlinePNR": "",
+              "Origin": {
+                "Airport": {
+                  "AirportCode": "DEL",
+                  "AirportName": "Indira Gandhi Airport",
+                  "Terminal": "1",
+                  "CityCode": "DEL",
+                  "CityName": "Delhi",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "DepTime": "2026-04-27T21:15:00"
+              },
+              "Destination": {
+                "Airport": {
+                  "AirportCode": "BLR",
+                  "AirportName": "Kempegowda International Airport",
+                  "Terminal": "2",
+                  "CityCode": "BLR",
+                  "CityName": "Bangalore",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "ArrTime": "2026-04-28T00:10:00"
+              },
+              "Duration": 175,
+              "GroundTime": 0,
+              "Mile": 0,
+              "StopOver": false,
+              "FlightInfoIndex": "1",
+              "StopPoint": "",
+              "StopPointArrivalTime": "0001-01-01T00:00:00",
+              "StopPointDepartureTime": "0001-01-01T00:00:00",
+              "Craft": "7M8",
+              "Remark": "Value",
+              "IsETicketEligible": true,
+              "FlightStatus": "Confirmed",
+              "Status": "HK",
+              "FareClassification": {
+                "Color": "rgb(255,213,128)",
+                "Type": "Value"
+              }
+            },
+            {
+              "Baggage": "15Kg",
+              "CabinBaggage": "7Kg",
+              "CabinClass": 2,
+              "SupplierFareClass": null,
+              "TripIndicator": 1,
+              "SegmentIndicator": 2,
+              "Airline": {
+                "AirlineCode": "IX",
+                "AirlineName": "Air India Express",
+                "FlightNumber": "1472",
+                "FareClass": "KC",
+                "OperatingCarrier": ""
+              },
+              "AirlinePNR": "",
+              "Origin": {
+                "Airport": {
+                  "AirportCode": "BLR",
+                  "AirportName": "Kempegowda International Airport",
+                  "Terminal": "2",
+                  "CityCode": "BLR",
+                  "CityName": "Bangalore",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "DepTime": "2026-04-28T06:30:00"
+              },
+              "Destination": {
+                "Airport": {
+                  "AirportCode": "MAA",
+                  "AirportName": "Chennai International Airport",
+                  "Terminal": "4",
+                  "CityCode": "MAA",
+                  "CityName": "Chennai",
+                  "CountryCode": "IN",
+                  "CountryName": "India"
+                },
+                "ArrTime": "2026-04-28T07:40:00"
+              },
+              "AccumulatedDuration": 625,
+              "Duration": 70,
+              "GroundTime": 380,
+              "Mile": 0,
+              "StopOver": false,
+              "FlightInfoIndex": "2",
+              "StopPoint": "",
+              "StopPointArrivalTime": "0001-01-01T00:00:00",
+              "StopPointDepartureTime": "0001-01-01T00:00:00",
+              "Craft": "7M8",
+              "Remark": "Value",
+              "IsETicketEligible": true,
+              "FlightStatus": "Confirmed",
+              "Status": "HK",
+              "FareClassification": {
+                "Color": "rgb(255,213,128)",
+                "Type": "Value"
+              }
+            }
+          ],
+          "FareRules": [
+            {
+              "Origin": "DEL",
+              "Destination": "BLR",
+              "Airline": "IX",
+              "FareBasisCode": "KCRA000",
+              "FareRuleDetail": "The FareBasisCode is: KCRA000<br /><span><b>IX-I5 Domestic Fare Rules</b></span><br /><br /><table border=\"1\"><tbody><tr><td rowspan=\"2\"><b>Change/Cancel/Meal/Seat/Baggage</b></td><td rowspan=\"2\"></td><td style=\"text-align:center\"><b>Fare Type</b></td></tr><tr><th width=\"200px;\">Xpress Value (EC)</th></tr><tr><td rowspan=\"4\">Baggage</td><td>Check-in Baggage<br />(Adult/Child)</td><td style=\"text-align:center\">15 KG (1 piece)</td></tr><tr><td>Check-in Baggage<br />(Infant)</td><td style=\"text-align:center\">Nil</td></tr><tr><td>Check-in Baggage (Student Fare)</td><td style=\"text-align:center\">25 KG (1 piece)</td></tr><tr><td>Cabin Baggage<br />(Not applicable for Infant)</td><td style=\"text-align:center\">7 KG</td></tr><tr><td>Meal/Seat</td><td></td><td style=\"text-align:center\">Chargeable</td></tr><tr><td rowspan=\"2\" width=\"200px;\">Change Fee <br><b>(Fare Difference is also applicable)</b><br />Per Person Per Sector</b></td><td>0 to 2 Hours prior to the departure</td><th>Not Allowed</th></tr><tr><td>Upto 2 hrs prior to the departure</td><td style=\"text-align:center\">INR 3000/-</td></tr></tr><tr><td rowspan=\"2\" width=\"200px;\">Cancellation Fee<br><b>or Airfare charges (Whichever is lower)</b><br />Per Person Per Sector</td><td>0 to 2 Hours prior to the departure</td><th>Not Allowed</th></tr><tr><td>Upto 2 hrs prior to the departure</td><td style=\"text-align:center\">INR 3500/-</td></tr></tbody></table><br /><b>Note</b>:<br /><ol><li>Subject to change without prior notice.</li><li>We should receive the request at least 4 hours prior to Airline Fare Rules Policy.</li></ol><br /><b>Note: Any booking change/Cancellation is not allowed within 2 hrs from the Departure irrespective of the product book</b><br /><br /><br/> <br/><ul><li>GST, RAF AND ANY OTHER APPLICABLE CHARGES ARE EXTRA.</li><li>FEES ARE INDICATIVE PER PAX AND PER SECTOR.</li><li>FOR DOMESTIC BOOKINGS, PASSENGERS MUST SUBMIT THE CANCELLATION OR REISSUE REQUEST AT LEAST 2 HOURS BEFORE THE TIME LIMIT DEFINED IN THE AIRLINE's POLICY.</li><li>FOR INTERNATIONAL BOOKINGS, PASSENGERS MUST SUBMIT THE CANCELLATION OR REISSUE REQUEST AT LEAST 4 HOURS BEFORE THE TIME LIMIT DEFINED IN THE AIRLINE's POLICY.</li></ul>",
+              "FareRestriction": null,
+              "FareInclusions": [
+                "Cabin Baggage Included",
+                "Check-In baggage Included",
+                "Cancellation fees apply",
+                "Reissue fees apply"
+              ]
+            },
+            {
+              "Origin": "BLR",
+              "Destination": "MAA",
+              "Airline": "IX",
+              "FareBasisCode": "KCRA000",
+              "FareRuleDetail": "Please refer above<br /><br /><br/> <br/>",
+              "FareRestriction": null,
+              "FareInclusions": [
+                "Cabin Baggage Included",
+                "Check-In baggage Included",
+                "Cancellation fees apply",
+                "Reissue fees apply"
+              ]
+            }
+          ],
+          "MiniFareRules": [
+            {
+              "CFARExcludedDetails": "",
+              "JourneyPoints": "DEL-BLR-MAA",
+              "Type": "Reissue",
+              "From": "2",
+              "To": "",
+              "Unit": "HOURS",
+              "Details": "INR 3000",
+              "OnlineReissueAllowed": false,
+              "OnlineRefundAllowed": false
+            },
+            {
+              "CFARExcludedDetails": "",
+              "JourneyPoints": "DEL-BLR-MAA",
+              "Type": "Cancellation",
+              "From": "0",
+              "To": "2",
+              "Unit": "HOURS",
+              "Details": "100%",
+              "OnlineReissueAllowed": false,
+              "OnlineRefundAllowed": false
+            },
+            {
+              "CFARExcludedDetails": "",
+              "JourneyPoints": "DEL-BLR-MAA",
+              "Type": "Cancellation",
+              "From": "2",
+              "To": "",
+              "Unit": "HOURS",
+              "Details": "INR 3500",
+              "OnlineReissueAllowed": false,
+              "OnlineRefundAllowed": false
+            },
+            {
+              "CFARExcludedDetails": "",
+              "JourneyPoints": "DEL-BLR-MAA",
+              "Type": "Reissue",
+              "From": "0",
+              "To": "2",
+              "Unit": "HOURS",
+              "Details": "100%",
+              "OnlineReissueAllowed": false,
+              "OnlineRefundAllowed": false
+            }
+          ],
+          "PenaltyCharges": {},
+          "Status": 5,
+          "Invoice": [
+            {
+              "CreditNoteGSTIN": null,
+              "GSTIN": null,
+              "InvoiceCreatedOn": "2026-04-27T15:13:13",
+              "InvoiceId": 5900,
+              "InvoiceNo": "DW/2627/5900",
+              "InvoiceAmount": 8468,
+              "Remarks": "",
+              "InvoiceStatus": 3
+            }
+          ],
+          "InvoiceAmount": 8468,
+          "InvoiceNo": "DW/2627/5900",
+          "InvoiceStatus": 3,
+          "InvoiceCreatedOn": "2026-04-27T15:13:13",
+          "Remarks": "",
+          "IsWebCheckInAllowed": false
+        },
+        "TicketStatus": 1
+      }
     }
   }
 }

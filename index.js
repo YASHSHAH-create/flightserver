@@ -9,6 +9,10 @@ const configurePassport = require('./config/passport');
 const routes = require('./routes'); // Automagically finds index.js
 const cron = require('node-cron');
 const { authenticate } = require('./services/tboService');
+const { initBotPolling } = require('./services/telegramBot');
+
+// Start telegram bot polling
+initBotPolling();
 
 // Schedule token refresh at 10 PM every day
 cron.schedule('0 22 * * *', async () => {
