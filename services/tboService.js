@@ -1,6 +1,18 @@
 const axios = require('axios');
 const { transformSearchResponse, processSSRResponse } = require('../utils/helpers');
 
+const isSessionInvalidError = (error) => {
+    if (!error) return false;
+    if (error.ErrorCode === 6 || error.ErrorCode === 28) return true;
+    if (error.ErrorMessage) {
+        const msg = error.ErrorMessage.toLowerCase();
+        if (msg.includes("session is not valid") || msg.includes("invalid token")) {
+            return true;
+        }
+    }
+    return false;
+};
+
 let tokenId = null;
 
 const authenticate = async () => {
@@ -46,7 +58,7 @@ const searchFlights = async (payload) => {
         const response = await axios.post(process.env.SEARCH_API_URL, payload);
 
         if (response.data && response.data.Error && response.data.Error.ErrorCode !== 0) {
-            if (response.data.Error.ErrorMessage && response.data.Error.ErrorMessage.includes("Session is not valid")) {
+            if (isSessionInvalidError(response.data.Error)) {
                 console.log("Session invalid, re-authenticating...");
                 await authenticate();
                 payload.TokenId = tokenId;
@@ -67,7 +79,7 @@ const getFareRule = async (payload) => {
         const response = await axios.post(process.env.FARE_RULE_API_URL, payload);
 
         if (response.data && response.data.Error && response.data.Error.ErrorCode !== 0) {
-            if (response.data.Error.ErrorMessage && response.data.Error.ErrorMessage.includes("Session is not valid")) {
+            if (isSessionInvalidError(response.data.Error)) {
                 await authenticate();
                 payload.TokenId = tokenId;
                 const retryResponse = await axios.post(process.env.FARE_RULE_API_URL, payload);
@@ -87,9 +99,7 @@ const getFareQuote = async (payload) => {
         const response = await axios.post(process.env.FARE_QUOTE_API_URL, payload);
 
         if (response.data && response.data.Response && response.data.Response.Error && response.data.Response.Error.ErrorCode !== 0) {
-            // Check for Session Invalid OR Generic Supplier Error (28) which sometimes fixes with re-auth
-            const errMsg = response.data.Response.Error.ErrorMessage;
-            if ((errMsg && errMsg.includes("Session is not valid")) || response.data.Response.Error.ErrorCode === 28) {
+            if (isSessionInvalidError(response.data.Response.Error)) {
                 console.log(`Encountered Error ${response.data.Response.Error.ErrorCode}, re-authenticating...`);
                 await authenticate();
                 payload.TokenId = tokenId;
@@ -110,7 +120,7 @@ const getSSR = async (payload) => {
         const response = await axios.post(process.env.SSR_API_URL, payload);
 
         if (response.data && response.data.Response && response.data.Response.Error && response.data.Response.Error.ErrorCode !== 0) {
-            if (response.data.Response.Error.ErrorMessage && response.data.Response.Error.ErrorMessage.includes("Session is not valid")) {
+            if (isSessionInvalidError(response.data.Response.Error)) {
                 await authenticate();
                 payload.TokenId = tokenId;
                 const retryResponse = await axios.post(process.env.SSR_API_URL, payload);
@@ -134,7 +144,7 @@ const ticketLCC = async (payload) => {
         const response = await axios.post(TBO_TICKET_URL, payload);
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
-        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+        if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
             console.log("Session invalid in ticketLCC, re-authenticating...");
             await authenticate();
             payload.TokenId = tokenId;
@@ -156,7 +166,7 @@ const bookNonLCC = async (payload) => {
         const response = await axios.post(TBO_BOOK_URL, payload);
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
-        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+        if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
             console.log("Session invalid in bookNonLCC, re-authenticating...");
             await authenticate();
             payload.TokenId = tokenId;
@@ -178,7 +188,7 @@ const ticketNonLCC = async (payload) => {
         const response = await axios.post(TBO_TICKET_URL, payload);
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
-        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+        if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
             console.log("Session invalid in ticketNonLCC, re-authenticating...");
             await authenticate();
             payload.TokenId = tokenId;
@@ -200,7 +210,7 @@ const getBookingDetails = async (payload) => {
         const response = await axios.post(TBO_GET_BOOKING_DETAILS_URL, payload);
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
-        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+        if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
             console.log("Session invalid in getBookingDetails, re-authenticating...");
             await authenticate();
             payload.TokenId = tokenId;
@@ -222,7 +232,7 @@ const getCalendarFare = async (payload) => {
         const response = await axios.post(TBO_GET_CALENDAR_FARE_URL, payload);
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
-        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+        if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
             console.log("Session invalid in getCalendarFare, re-authenticating...");
             await authenticate();
             payload.TokenId = tokenId;
@@ -244,7 +254,7 @@ const updateCalendarFareOfDay = async (payload) => {
         const response = await axios.post(TBO_UPDATE_CALENDAR_FARE_URL, payload);
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
-        if (error && error.ErrorCode !== 0 && error.ErrorMessage && error.ErrorMessage.includes("Session is not valid")) {
+        if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
             console.log("Session invalid in updateCalendarFareOfDay, re-authenticating...");
             await authenticate();
             payload.TokenId = tokenId;
