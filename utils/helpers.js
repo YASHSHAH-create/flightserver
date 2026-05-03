@@ -125,15 +125,22 @@ const transformSearchResponse = (tboResponse) => {
         let flightKey = '';
         
         if (flight.flights.outbound && flight.flights.outbound.segments && flight.flights.outbound.segments.length > 0) {
-            const firstSeg = flight.flights.outbound.segments[0];
-            const lastSeg = flight.flights.outbound.segments[flight.flights.outbound.segments.length - 1];
-            flightKey += `${firstSeg.airlineCode}${firstSeg.flightNumber}-${firstSeg.depTime}-${lastSeg.arrTime}`;
+            // Key: join all segment flightNumbers + first depTime only
+            // arrTime is intentionally excluded — it can differ slightly between sources (timezone suffix)
+            const segs = flight.flights.outbound.segments;
+            const segKey = segs.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
+            // Normalize depTime to date+HHMM only (strip seconds & timezone) to handle format variations
+            const rawDep = segs[0].depTime || '';
+            const normDep = rawDep.substring(0, 16); // "2026-05-04T15:50"
+            flightKey += `${segKey}@${normDep}`;
         }
         
         if (flight.flights.inbound && flight.flights.inbound.segments && flight.flights.inbound.segments.length > 0) {
-            const firstSeg = flight.flights.inbound.segments[0];
-            const lastSeg = flight.flights.inbound.segments[flight.flights.inbound.segments.length - 1];
-            flightKey += `|${firstSeg.airlineCode}${firstSeg.flightNumber}-${firstSeg.depTime}-${lastSeg.arrTime}`;
+            const segs = flight.flights.inbound.segments;
+            const segKey = segs.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
+            const rawDep = segs[0].depTime || '';
+            const normDep = rawDep.substring(0, 16);
+            flightKey += `|${segKey}@${normDep}`;
         }
 
         const fareDetail = {
