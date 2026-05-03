@@ -225,7 +225,7 @@ const ticketNonLCC = async (payload) => {
 
 const getBookingDetails = async (payload) => {
     payload.TokenId = await getToken();
-    const TBO_GET_BOOKING_DETAILS_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetBookingDetails";
+    const TBO_GET_BOOKING_DETAILS_URL = "https://booking.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/GetBookingDetails";
     console.log('Sending GetBookingDetails request:', JSON.stringify(payload, null, 2));
     try {
         const response = await axios.post(TBO_GET_BOOKING_DETAILS_URL, payload);
@@ -247,7 +247,7 @@ const getBookingDetails = async (payload) => {
 
 const getCalendarFare = async (payload) => {
     payload.TokenId = await getToken();
-    const TBO_GET_CALENDAR_FARE_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/GetCalendarFare";
+    const TBO_GET_CALENDAR_FARE_URL = "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/GetCalendarFare";
     console.log('Sending GetCalendarFare request:', JSON.stringify(payload, null, 2));
     try {
         const response = await axios.post(TBO_GET_CALENDAR_FARE_URL, payload);
@@ -269,7 +269,7 @@ const getCalendarFare = async (payload) => {
 
 const updateCalendarFareOfDay = async (payload) => {
     payload.TokenId = await getToken();
-    const TBO_UPDATE_CALENDAR_FARE_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/UpdateCalendarFareOfDay";
+    const TBO_UPDATE_CALENDAR_FARE_URL = "https://tboapi.travelboutiqueonline.com/AirAPI_V10/AirService.svc/rest/UpdateCalendarFareOfDay";
     console.log('Sending UpdateCalendarFareOfDay request:', JSON.stringify(payload, null, 2));
     try {
         const response = await axios.post(TBO_UPDATE_CALENDAR_FARE_URL, payload);
