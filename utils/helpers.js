@@ -39,7 +39,7 @@ const transformSearchResponse = (tboResponse) => {
     const { TraceId, Results } = tboResponse.Response;
     const flightResults = Results[0] || [];
 
-    return flightResults.map(res => {
+    const mappedResults = flightResults.map(res => {
         // Flatten segments: TBO segments can be array of arrays
         let allSegments = [];
         if (Array.isArray(res.Segments)) {
@@ -117,6 +117,30 @@ const transformSearchResponse = (tboResponse) => {
 
         return optimized;
     });
+
+    // Deduplicate flights: keep only the lowest fare for each unique flight
+    const uniqueFlights = new Map();
+
+    mappedResults.forEach(flight => {
+        let flightKey = '';
+        if (flight.flights.outbound && flight.flights.outbound.segments) {
+            flightKey += flight.flights.outbound.segments.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
+        }
+        if (flight.flights.inbound && flight.flights.inbound.segments) {
+            flightKey += '|' + flight.flights.inbound.segments.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
+        }
+
+        if (uniqueFlights.has(flightKey)) {
+            const existingFlight = uniqueFlights.get(flightKey);
+            if (flight.price.total < existingFlight.price.total) {
+                uniqueFlights.set(flightKey, flight);
+            }
+        } else {
+            uniqueFlights.set(flightKey, flight);
+        }
+    });
+
+    return Array.from(uniqueFlights.values());
 };
 
 // Helper function to process row seats
