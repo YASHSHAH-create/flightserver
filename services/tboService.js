@@ -134,9 +134,11 @@ const getSSR = async (payload) => {
 };
 
 const ticketLCC = async (payload) => {
-    payload.TokenId = await getToken();
-    // TBO_BASE_URL was defined locally in index.js, assuming it matches the pattern or uses env
-    // The original code had: const TBO_BASE_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest";
+    // Always force a fresh authentication before ticketing — critical money operation.
+    console.log("ticketLCC: Forcing fresh authentication before Ticket call...");
+    await authenticate();
+    payload.TokenId = tokenId;
+
     const TBO_TICKET_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket";
 
     console.log('Sending LCC Ticket request:', JSON.stringify(payload, null, 2));
@@ -145,11 +147,9 @@ const ticketLCC = async (payload) => {
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
         if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
-            console.log("Session invalid in ticketLCC, re-authenticating...");
-            await authenticate();
-            payload.TokenId = tokenId;
-            const retryResponse = await axios.post(TBO_TICKET_URL, payload);
-            return retryResponse.data;
+            // ErrorCode 6 with a fresh token = TraceId likely expired
+            console.error(`ticketLCC: Session error even after fresh auth. ErrorCode=${error.ErrorCode}, Msg=${error.ErrorMessage}. TraceId likely expired.`);
+            return response.data;
         }
 
         return response.data;
@@ -159,7 +159,12 @@ const ticketLCC = async (payload) => {
 };
 
 const bookNonLCC = async (payload) => {
-    payload.TokenId = await getToken();
+    // Always force a fresh authentication before booking — critical money operation.
+    // The cached token from search (ensureToken) may be stale after the user completes payment.
+    console.log("bookNonLCC: Forcing fresh authentication before Book call...");
+    await authenticate();
+    payload.TokenId = tokenId;
+
     const TBO_BOOK_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Book";
     console.log('Sending Non-LCC Book request:', JSON.stringify(payload, null, 2));
     try {
@@ -167,11 +172,10 @@ const bookNonLCC = async (payload) => {
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
         if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
-            console.log("Session invalid in bookNonLCC, re-authenticating...");
-            await authenticate();
-            payload.TokenId = tokenId;
-            const retryResponse = await axios.post(TBO_BOOK_URL, payload);
-            return retryResponse.data;
+            // ErrorCode 6 with a fresh token means the TraceId/search session has expired.
+            // No point retrying — a new token cannot revive an expired TraceId.
+            console.error(`bookNonLCC: Session error even after fresh auth. ErrorCode=${error.ErrorCode}, Msg=${error.ErrorMessage}. TraceId likely expired.`);
+            return response.data;
         }
 
         return response.data;
