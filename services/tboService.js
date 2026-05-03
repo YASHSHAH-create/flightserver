@@ -13,12 +13,10 @@ const isSessionInvalidError = (error) => {
     return false;
 };
 
-// TBO token is valid for a calendar day (00:00 AM – 11:59 PM).
-// Per TBO docs: generate ONE token per day, reuse it for all requests.
-let tokenId = null;
-let tokenDate = null; // 'YYYY-MM-DD' of when token was generated
 
-const todayStr = () => new Date().toISOString().slice(0, 10); // '2026-05-03'
+let tokenId = null;
+let tokenDate = null;
+const todayStr = () => new Date().toISOString().slice(0, 10); 
 
 const authenticate = async () => {
     try {
@@ -29,6 +27,16 @@ const authenticate = async () => {
             EndUserIp: process.env.END_USER_IP
         };
         
+        console.log("=== TBO AUTHENTICATION INFO ===");
+        console.log("AUTH URL:", process.env.AUTH_API_URL);
+        console.log("AUTH CREDENTIALS BEING SENT:", {
+            ClientId: process.env.CLIENT_ID,
+            UserName: process.env.USERNAME,
+            Password: process.env.PASSWORD,
+            EndUserIp: process.env.END_USER_IP
+        });
+        console.log("===============================");
+
         const response = await axios.post(process.env.AUTH_API_URL, authPayload);
 
         if (response.data && response.data.TokenId) {
@@ -146,7 +154,7 @@ const getSSR = async (payload) => {
 
 const ticketLCC = async (payload) => {
     payload.TokenId = await getToken(); // Use daily cached token per TBO docs
-    const TBO_TICKET_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket";
+    const TBO_TICKET_URL = process.env.TICKET_API_URL;
 
     console.log('Sending LCC Ticket request:', JSON.stringify(payload, null, 2));
     try {
@@ -168,8 +176,13 @@ const ticketLCC = async (payload) => {
 
 const bookNonLCC = async (payload) => {
     payload.TokenId = await getToken(); // Use daily cached token per TBO docs
-    const TBO_BOOK_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Book";
-    console.log('Sending Non-LCC Book request:', JSON.stringify(payload, null, 2));
+    const TBO_BOOK_URL = process.env.BOOK_API_URL;
+    
+    console.log('=== TBO BOOK API INFO ===');
+    console.log('BOOK API URL:', TBO_BOOK_URL);
+    console.log('Sending Non-LCC Book request Payload:', JSON.stringify(payload, null, 2));
+    console.log('=========================');
+    
     try {
         const response = await axios.post(TBO_BOOK_URL, payload);
 
@@ -190,7 +203,7 @@ const bookNonLCC = async (payload) => {
 
 const ticketNonLCC = async (payload) => {
     payload.TokenId = await getToken();
-    const TBO_TICKET_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket";
+    const TBO_TICKET_URL = process.env.TICKET_API_URL;
     console.log('Sending Non-LCC Ticket request:', JSON.stringify(payload, null, 2));
     try {
         const response = await axios.post(TBO_TICKET_URL, payload);
