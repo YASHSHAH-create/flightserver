@@ -118,29 +118,64 @@ const transformSearchResponse = (tboResponse) => {
         return optimized;
     });
 
-    // Deduplicate flights: keep only the lowest fare for each unique flight
-    const uniqueFlights = new Map();
+    // Group flights by flight numbers and times, and nest fares
+    const groupedFlights = new Map();
 
     mappedResults.forEach(flight => {
         let flightKey = '';
-        if (flight.flights.outbound && flight.flights.outbound.segments) {
-            flightKey += flight.flights.outbound.segments.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
+        
+        if (flight.flights.outbound && flight.flights.outbound.segments && flight.flights.outbound.segments.length > 0) {
+            const firstSeg = flight.flights.outbound.segments[0];
+            const lastSeg = flight.flights.outbound.segments[flight.flights.outbound.segments.length - 1];
+            flightKey += `${firstSeg.airlineCode}${firstSeg.flightNumber}-${firstSeg.depTime}-${lastSeg.arrTime}`;
         }
-        if (flight.flights.inbound && flight.flights.inbound.segments) {
-            flightKey += '|' + flight.flights.inbound.segments.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
+        
+        if (flight.flights.inbound && flight.flights.inbound.segments && flight.flights.inbound.segments.length > 0) {
+            const firstSeg = flight.flights.inbound.segments[0];
+            const lastSeg = flight.flights.inbound.segments[flight.flights.inbound.segments.length - 1];
+            flightKey += `|${firstSeg.airlineCode}${firstSeg.flightNumber}-${firstSeg.depTime}-${lastSeg.arrTime}`;
         }
 
-        if (uniqueFlights.has(flightKey)) {
-            const existingFlight = uniqueFlights.get(flightKey);
-            if (flight.price.total < existingFlight.price.total) {
-                uniqueFlights.set(flightKey, flight);
+        const fareDetail = {
+            resultIndex: flight.resultIndex,
+            source: flight.source,
+            isRefundable: flight.isRefundable,
+            isLCC: flight.isLCC,
+            price: flight.price,
+            baggage: flight.flights.outbound?.segments[0]?.baggage || '15 KG'
+        };
+
+        if (groupedFlights.has(flightKey)) {
+            const existingGroup = groupedFlights.get(flightKey);
+            
+            // Check for exact duplicate fare (same price + same rules/baggage)
+            const isDuplicate = existingGroup.fares.some(f => 
+                f.price.total === fareDetail.price.total && 
+                f.isRefundable === fareDetail.isRefundable && 
+                f.baggage === fareDetail.baggage
+            );
+
+            if (!isDuplicate) {
+                existingGroup.fares.push(fareDetail);
             }
         } else {
-            uniqueFlights.set(flightKey, flight);
+            // Create a new grouped object
+            const newGroup = {
+                searchId: flight.searchId,
+                flights: flight.flights,
+                fares: [fareDetail]
+            };
+            groupedFlights.set(flightKey, newGroup);
         }
     });
 
-    return Array.from(uniqueFlights.values());
+    // Sort fares within each group by price
+    const result = Array.from(groupedFlights.values());
+    result.forEach(group => {
+        group.fares.sort((a, b) => a.price.total - b.price.total);
+    });
+
+    return result;
 };
 
 // Helper function to process row seats
