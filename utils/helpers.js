@@ -98,8 +98,8 @@ const transformSearchResponse = (tboResponse) => {
             searchId: TraceId,
             resultIndex: res.ResultIndex,
             source: res.Source,
-            isRefundable: res.IsRefundable,
-            isLCC: res.IsLCC,
+            isRefundable: res.IsRefundable === true || res.IsRefundable === 'true',
+            isLCC: res.IsLCC === true || res.IsLCC === 'true',
             price: {
                 currency: res.Fare?.Currency,
                 total: res.Fare?.PublishedFare,
