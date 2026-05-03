@@ -13,7 +13,12 @@ const isSessionInvalidError = (error) => {
     return false;
 };
 
+// TBO token is valid for a calendar day (00:00 AM – 11:59 PM).
+// Per TBO docs: generate ONE token per day, reuse it for all requests.
 let tokenId = null;
+let tokenDate = null; // 'YYYY-MM-DD' of when token was generated
+
+const todayStr = () => new Date().toISOString().slice(0, 10); // '2026-05-03'
 
 const authenticate = async () => {
     try {
@@ -23,27 +28,33 @@ const authenticate = async () => {
             Password: process.env.PASSWORD,
             EndUserIp: process.env.END_USER_IP
         };
-        console.log("Authentication Credentials:", authPayload);
         
         const response = await axios.post(process.env.AUTH_API_URL, authPayload);
 
         if (response.data && response.data.TokenId) {
             tokenId = response.data.TokenId;
-            console.log('Authentication successful. TokenId:', tokenId);
+            tokenDate = todayStr();
+            console.log(`TBO Auth successful. TokenId: ${tokenId} (valid for today: ${tokenDate})`);
             return tokenId;
         } else {
-            console.error('Authentication failed:', response.data);
+            console.error('TBO Auth failed:', response.data);
             return null;
         }
     } catch (error) {
-        console.error('Error during authentication:', error.message);
+        console.error('Error during TBO authentication:', error.message);
         throw error;
     }
 };
 
 const getToken = async () => {
-    if (!tokenId) {
-        console.log('TokenId is null, initiating authentication...');
+    const today = todayStr();
+    if (!tokenId || tokenDate !== today) {
+        // No token yet, or token is from a previous calendar day — re-authenticate
+        if (tokenDate && tokenDate !== today) {
+            console.log(`TBO Token expired (was for ${tokenDate}, today is ${today}). Re-authenticating...`);
+        } else {
+            console.log('TBO TokenId is null, initiating first authentication...');
+        }
         await authenticate();
     }
     console.log('Using TokenId:', tokenId);
@@ -134,11 +145,7 @@ const getSSR = async (payload) => {
 };
 
 const ticketLCC = async (payload) => {
-    // Always force a fresh authentication before ticketing — critical money operation.
-    console.log("ticketLCC: Forcing fresh authentication before Ticket call...");
-    await authenticate();
-    payload.TokenId = tokenId;
-
+    payload.TokenId = await getToken(); // Use daily cached token per TBO docs
     const TBO_TICKET_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Ticket";
 
     console.log('Sending LCC Ticket request:', JSON.stringify(payload, null, 2));
@@ -147,8 +154,9 @@ const ticketLCC = async (payload) => {
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
         if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
-            // ErrorCode 6 with a fresh token = TraceId likely expired
-            console.error(`ticketLCC: Session error even after fresh auth. ErrorCode=${error.ErrorCode}, Msg=${error.ErrorMessage}. TraceId likely expired.`);
+            // ErrorCode 6 here almost always means the TraceId/search session expired,
+            // NOT the token (token is daily and was just validated above).
+            console.error(`ticketLCC: ErrorCode=${error.ErrorCode} ("${error.ErrorMessage}"). TraceId has likely expired — user must search again.`);
             return response.data;
         }
 
@@ -159,12 +167,7 @@ const ticketLCC = async (payload) => {
 };
 
 const bookNonLCC = async (payload) => {
-    // Always force a fresh authentication before booking — critical money operation.
-    // The cached token from search (ensureToken) may be stale after the user completes payment.
-    console.log("bookNonLCC: Forcing fresh authentication before Book call...");
-    await authenticate();
-    payload.TokenId = tokenId;
-
+    payload.TokenId = await getToken(); // Use daily cached token per TBO docs
     const TBO_BOOK_URL = "http://api.tektravels.com/BookingEngineService_Air/AirService.svc/rest/Book";
     console.log('Sending Non-LCC Book request:', JSON.stringify(payload, null, 2));
     try {
@@ -172,9 +175,10 @@ const bookNonLCC = async (payload) => {
 
         const error = response.data.Error || (response.data.Response && response.data.Response.Error);
         if (error && error.ErrorCode !== 0 && isSessionInvalidError(error)) {
-            // ErrorCode 6 with a fresh token means the TraceId/search session has expired.
-            // No point retrying — a new token cannot revive an expired TraceId.
-            console.error(`bookNonLCC: Session error even after fresh auth. ErrorCode=${error.ErrorCode}, Msg=${error.ErrorMessage}. TraceId likely expired.`);
+            // ErrorCode 6 here almost always means the TraceId/search session expired,
+            // NOT the token (token is daily and was just validated above).
+            // A new token cannot revive an expired TraceId — user must search again.
+            console.error(`bookNonLCC: ErrorCode=${error.ErrorCode} ("${error.ErrorMessage}"). TraceId has likely expired — user must search again.`);
             return response.data;
         }
 
