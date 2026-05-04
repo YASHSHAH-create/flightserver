@@ -71,17 +71,30 @@ const transformSearchResponse = (tboResponse) => {
             }));
 
             // Calculate layover times
+            let totalLayoverTime = 0;
             for (let i = 0; i < mappedSegments.length - 1; i++) {
                 const arrival = new Date(mappedSegments[i].arrTime);
                 const departure = new Date(mappedSegments[i + 1].depTime);
                 const diffMins = Math.floor((departure - arrival) / (1000 * 60));
                 mappedSegments[i].layoverTime = diffMins > 0 ? diffMins : 0;
+                totalLayoverTime += mappedSegments[i].layoverTime;
             }
 
             // Calculate total duration for the leg
-            const firstDep = new Date(mappedSegments[0].depTime);
-            const lastArr = new Date(mappedSegments[mappedSegments.length - 1].arrTime);
-            const totalDuration = Math.floor((lastArr - firstDep) / (1000 * 60));
+            const lastSegment = segments[segments.length - 1];
+            let totalDuration = 0;
+            if (lastSegment && lastSegment.AccumulatedDuration) {
+                totalDuration = lastSegment.AccumulatedDuration;
+            } else {
+                const totalSegmentDuration = mappedSegments.reduce((sum, seg) => sum + (seg.duration || 0), 0);
+                if (totalSegmentDuration > 0) {
+                    totalDuration = totalSegmentDuration + totalLayoverTime;
+                } else {
+                    const firstDep = new Date(mappedSegments[0].depTime);
+                    const lastArr = new Date(mappedSegments[mappedSegments.length - 1].arrTime);
+                    totalDuration = Math.floor((lastArr - firstDep) / (1000 * 60));
+                }
+            }
 
             return {
                 duration: totalDuration,
