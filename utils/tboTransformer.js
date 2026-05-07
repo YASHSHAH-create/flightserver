@@ -172,7 +172,75 @@ const transformFareQuote = (rawData) => {
       checkin: firstSegment.Baggage || 'Not available',
       cabin: firstSegment.CabinBaggage || 'Not available'
     },
-    segments: transformedSegments
+    segments: transformedSegments,
+    ...(result.Segments[1] && result.Segments[1].length > 0 ? {
+      inbound: (() => {
+        const inboundSegments = result.Segments[1];
+        const stops = inboundSegments.length - 1;
+        let totalDurationMinutes = 0;
+        let totalLayoverMinutes = 0;
+        
+        const mappedSegments = inboundSegments.map((seg, index) => {
+          const originCode = seg.Origin?.Airport?.AirportCode || seg.Origin?.AirportCode || '';
+          const destCode = seg.Destination?.Airport?.AirportCode || seg.Destination?.AirportCode || '';
+          const airlineCode = seg.Airline?.AirlineCode || '';
+          const flightNum = seg.Airline?.FlightNumber || '';
+          const flightIdentifier = `${airlineCode}-${flightNum}`;
+          const segDuration = seg.Duration || 0;
+          let groundTime = seg.GroundTime || 0;
+
+          if (index < stops) {
+            if (!groundTime) {
+              const nextSeg = inboundSegments[index + 1];
+              if (seg.Destination?.ArrTime && nextSeg?.Origin?.DepTime) {
+                const arrTs = parseSafeTime(seg.Destination.ArrTime);
+                const depTs = parseSafeTime(nextSeg.Origin.DepTime);
+                if (depTs > arrTs) {
+                  groundTime = Math.floor((depTs - arrTs) / 60000);
+                }
+              }
+            }
+            totalLayoverMinutes += groundTime;
+          }
+          
+          totalDurationMinutes += segDuration;
+
+          return {
+            from: originCode,
+            to: destCode,
+            departure: formatTime(seg.Origin?.DepTime),
+            arrival: formatTime(seg.Destination?.ArrTime),
+            duration: formatDuration(segDuration),
+            airline: seg.Airline?.AirlineName || '',
+            flightNumber: flightIdentifier,
+            ...(index < stops && { layoverAfter: formatDuration(groundTime) })
+          };
+        });
+
+        totalDurationMinutes += totalLayoverMinutes;
+        
+        const firstDepTime = inboundSegments[0].Origin?.DepTime;
+        const lastArrTime = inboundSegments[inboundSegments.length - 1].Destination?.ArrTime;
+        if (!totalDurationMinutes && firstDepTime && lastArrTime) {
+            const arrTs = parseSafeTime(lastArrTime);
+            const depTs = parseSafeTime(firstDepTime);
+            if (arrTs > depTs) {
+               totalDurationMinutes = Math.floor((arrTs - depTs) / 60000);
+            }
+        }
+
+        return {
+          airline: inboundSegments[0].Airline?.AirlineName || '',
+          flightNumbers: inboundSegments.map(s => `${s.Airline?.AirlineCode || ''}-${s.Airline?.FlightNumber || ''}`).join(', '),
+          route: `${inboundSegments[0].Origin?.Airport?.AirportCode || inboundSegments[0].Origin?.AirportCode || ''} → ${inboundSegments[inboundSegments.length - 1].Destination?.Airport?.AirportCode || inboundSegments[inboundSegments.length - 1].Destination?.AirportCode || ''}`,
+          departureTime: formatTime(inboundSegments[0].Origin?.DepTime),
+          arrivalTime: formatTime(inboundSegments[inboundSegments.length - 1].Destination?.ArrTime),
+          totalDuration: formatDuration(totalDurationMinutes),
+          stops,
+          segments: mappedSegments
+        };
+      })()
+    } : {})
   };
 };
 
