@@ -417,19 +417,19 @@ const sendTelegramNotification = async (bookingData) => {
                                 <th>Name</th>
                                 <th>Ticket No</th>
                                 <th>Type</th>
-                                <th style="text-align:center;">QR Code</th>
+                                <th style="text-align:center;">Barcode</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${itinerary.Passenger?.map(p => {
                                 const barcodeContent = p.BarcodeDetails?.Barcode?.[0]?.Content || `PNR:${pnr} Name:${p.FirstName} ${p.LastName}`;
-                                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(barcodeContent)}`;
+                                const barcodeUrl = `https://bwipjs-api.metafloor.com/?bcid=pdf417&text=${encodeURIComponent(barcodeContent)}&scale=3`;
                                 return `
                             <tr>
                                 <td><b>${p.Title} ${p.FirstName} ${p.LastName}</b><br><span style="font-size:12px;color:#6b7280;">${p.Email || ''} ${p.ContactNo || ''}</span></td>
                                 <td>${p.Ticket?.TicketNumber || 'Pending'}</td>
                                 <td>${p.PaxType === 1 ? 'Adult' : p.PaxType === 2 ? 'Child' : 'Infant'}</td>
-                                <td style="text-align:center;"><img src="${qrUrl}" width="60" height="60" alt="QR" style="border-radius:4px;" /></td>
+                                <td style="text-align:center;"><img src="${barcodeUrl}" style="max-width: 150px; height: auto; border-radius: 4px;" alt="Barcode" /></td>
                             </tr>`}).join('')}
                         </tbody>
                     </table>
