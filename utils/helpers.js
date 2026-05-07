@@ -37,7 +37,14 @@ const transformSearchResponse = (tboResponse) => {
     }
 
     const { TraceId, Results } = tboResponse.Response;
-    const flightResults = Results[0] || [];
+    let flightResults = [];
+    if (Array.isArray(Results)) {
+        Results.forEach(resArr => {
+            if (Array.isArray(resArr)) {
+                flightResults = flightResults.concat(resArr);
+            }
+        });
+    }
 
     const mappedResults = flightResults.map(res => {
         // Flatten segments: TBO segments can be array of arrays
@@ -52,6 +59,15 @@ const transformSearchResponse = (tboResponse) => {
         // Split into Outbound (TripIndicator 1) and Inbound (TripIndicator 2)
         const outboundSegs = allSegments.filter(s => s.TripIndicator === 1 || !s.TripIndicator);
         const inboundSegs = allSegments.filter(s => s.TripIndicator === 2);
+
+        let mainSegs = outboundSegs;
+        let returnSegs = inboundSegs;
+
+        // If this is a return flight from Results[1], outboundSegs will be empty.
+        if (mainSegs.length === 0 && returnSegs.length > 0) {
+            mainSegs = returnSegs;
+            returnSegs = [];
+        }
 
         const mapLeg = (segments) => {
             if (!segments || segments.length === 0) return null;
@@ -104,8 +120,8 @@ const transformSearchResponse = (tboResponse) => {
             };
         };
 
-        const outbound = mapLeg(outboundSegs);
-        const inbound = mapLeg(inboundSegs);
+        const outbound = mapLeg(mainSegs);
+        const inbound = mapLeg(returnSegs);
 
         const optimized = {
             searchId: TraceId,
