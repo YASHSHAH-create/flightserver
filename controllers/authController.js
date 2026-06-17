@@ -46,13 +46,21 @@ const syncGoogleUser = async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        let user = await User.findOne({ googleId });
+        const normalizedEmail = email.toLowerCase().trim();
+
+        // Search by googleId or email
+        let user = await User.findOne({
+            $or: [
+                { googleId },
+                { email: normalizedEmail }
+            ]
+        });
 
         if (!user) {
             // Create new user
             user = new User({
                 googleId,
-                email,
+                email: normalizedEmail,
                 name,
                 picture,
                 pushToken,
@@ -60,10 +68,13 @@ const syncGoogleUser = async (req, res) => {
             });
             await user.save();
         } else {
-            // Update existing (optional, but good for keeping profile fresh)
-            user.email = email;
-            user.name = name;
-            user.picture = picture;
+            // Update existing (link googleId if missing/changed)
+            if (user.googleId !== googleId) {
+                user.googleId = googleId;
+            }
+            user.email = normalizedEmail;
+            if (name) user.name = name;
+            if (picture) user.picture = picture;
             if (pushToken) {
                 user.pushToken = pushToken;
             }
@@ -75,7 +86,7 @@ const syncGoogleUser = async (req, res) => {
             await user.save();
         }
 
-        // Generate token (optional, if we want to switch to backend-jwt later, but for now we just need the user DB record)
+        // Generate token
         const token = jwt.sign(
             { id: user._id, email: user.email },
             process.env.JWT_SECRET || 'secret_key',
