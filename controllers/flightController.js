@@ -251,10 +251,7 @@ const bookFlight = async (req, res) => {
 
             const data = await tboService.ticketLCC(lccPayload);
 
-            // Debug: Save LCC Ticket Response
-            try {
-                fs.writeFileSync(path.join(__dirname, '../response.json'), JSON.stringify({ lccTicketResponse: data }, null, 2));
-            } catch (err) { console.error("Error writing response.json", err); }
+
 
             if (data?.Response?.Error?.ErrorCode === 0 && data?.Response?.Response?.FlightItinerary) {
                 sendTelegramNotification(data);
@@ -277,11 +274,7 @@ const bookFlight = async (req, res) => {
 
             const bookResponse = await tboService.bookNonLCC(bookPayload);
 
-            // Debug: Save Book Response
-            let debugData = { bookResponse };
-            try {
-                fs.writeFileSync(path.join(__dirname, '../response.json'), JSON.stringify(debugData, null, 2));
-            } catch (err) { console.error("Error writing response.json (Book)", err); }
+
 
             // Check if Book step failed
             if (bookResponse.Response && bookResponse.Response.Error && bookResponse.Response.Error.ErrorCode !== 0) {
@@ -353,11 +346,7 @@ const bookFlight = async (req, res) => {
 
             const ticketResponse = await tboService.ticketNonLCC(ticketPayload);
 
-            // Debug: Save Ticket Response
-            debugData.ticketResponse = ticketResponse;
-            try {
-                fs.writeFileSync(path.join(__dirname, '../response.json'), JSON.stringify(debugData, null, 2));
-            } catch (err) { console.error("Error writing response.json (Ticket)", err); }
+
 
             if (ticketResponse?.Response?.Error?.ErrorCode === 0 && ticketResponse?.Response?.Response?.FlightItinerary) {
                 sendTelegramNotification(ticketResponse);
