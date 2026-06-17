@@ -30,6 +30,43 @@ const getClassCode = (classStr) => {
     return map[classStr?.toLowerCase()] || 1; // Default to 1 (All)
 };
 
+// Helper to normalize flight numbers by trimming, converting to uppercase,
+// removing the airline prefix if present, and removing non-alphanumeric characters.
+const normalizeFlightNum = (airlineCode, flightNum) => {
+    if (!flightNum) return '';
+    let num = String(flightNum).trim().toUpperCase();
+    if (airlineCode) {
+        const code = String(airlineCode).trim().toUpperCase();
+        if (num.startsWith(code)) {
+            num = num.substring(code.length);
+        }
+    }
+    return num.replace(/[^A-Z0-9]/g, '');
+};
+
+// Helper to normalize departure time, strip any timezone offsets, and return local timestamp.
+const getLocalTimestamp = (timeStr) => {
+    if (!timeStr) return 0;
+    let normalized = String(timeStr).replace(' ', 'T');
+    if (normalized.endsWith('Z')) {
+        normalized = normalized.slice(0, -1);
+    } else {
+        const plusIndex = normalized.lastIndexOf('+');
+        const minusIndex = normalized.lastIndexOf('-');
+        const lastIndex = Math.max(plusIndex, minusIndex);
+        const tIndex = normalized.indexOf('T');
+        if (lastIndex > tIndex && lastIndex > 10) {
+            normalized = normalized.substring(0, lastIndex);
+        }
+    }
+    const dotIndex = normalized.indexOf('.');
+    if (dotIndex !== -1) {
+        normalized = normalized.substring(0, dotIndex);
+    }
+    // Append Z to treat this consistently as pseudo-UTC timestamp ignoring local server timezone shifts
+    return new Date(normalized + 'Z').getTime();
+};
+
 // Helper to transform TBO search response
 const transformSearchResponse = (tboResponse) => {
     if (!tboResponse || !tboResponse.Response || !tboResponse.Response.Results) {
@@ -147,30 +184,12 @@ const transformSearchResponse = (tboResponse) => {
         return optimized;
     });
 
-    // Group flights by flight numbers and times, and nest fares
-    const groupedFlights = new Map();
+    // Group flights by flight numbers and times (within 30 mins window), and nest fares
+    const groupedFlights = [];
 
     mappedResults.forEach(flight => {
-        let flightKey = '';
-        
-        if (flight.flights.outbound && flight.flights.outbound.segments && flight.flights.outbound.segments.length > 0) {
-            // Key: join all segment flightNumbers + first depTime only
-            // arrTime is intentionally excluded — it can differ slightly between sources (timezone suffix)
-            const segs = flight.flights.outbound.segments;
-            const segKey = segs.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
-            // Normalize depTime to date+HHMM only (strip seconds & timezone) to handle format variations
-            const rawDep = segs[0].depTime || '';
-            const normDep = rawDep.substring(0, 16); // "2026-05-04T15:50"
-            flightKey += `${segKey}@${normDep}`;
-        }
-        
-        if (flight.flights.inbound && flight.flights.inbound.segments && flight.flights.inbound.segments.length > 0) {
-            const segs = flight.flights.inbound.segments;
-            const segKey = segs.map(s => `${s.airlineCode}${s.flightNumber}`).join('-');
-            const rawDep = segs[0].depTime || '';
-            const normDep = rawDep.substring(0, 16);
-            flightKey += `|${segKey}@${normDep}`;
-        }
+        const outboundSegs = flight.flights.outbound?.segments || [];
+        const inboundSegs = flight.flights.inbound?.segments || [];
 
         const fareDetail = {
             resultIndex: flight.resultIndex,
@@ -181,18 +200,56 @@ const transformSearchResponse = (tboResponse) => {
             baggage: flight.flights.outbound?.segments[0]?.baggage || '15 KG'
         };
 
-        if (groupedFlights.has(flightKey)) {
-            const existingGroup = groupedFlights.get(flightKey);
-            
+        // Find if there is an existing group that matches this flight
+        let matchedGroup = groupedFlights.find(group => {
+            const groupOutbound = group.flights.outbound?.segments || [];
+            const groupInbound = group.flights.inbound?.segments || [];
+
+            // 1. Check outbound segments length
+            if (outboundSegs.length !== groupOutbound.length) return false;
+
+            // 2. Check outbound segments flight numbers
+            for (let i = 0; i < outboundSegs.length; i++) {
+                const currentNum = normalizeFlightNum(outboundSegs[i].airlineCode, outboundSegs[i].flightNumber);
+                const groupNum = normalizeFlightNum(groupOutbound[i].airlineCode, groupOutbound[i].flightNumber);
+                if (currentNum !== groupNum) return false;
+            }
+
+            // 3. Check outbound departure time within 30 minutes
+            if (outboundSegs.length > 0) {
+                const currentDepTime = getLocalTimestamp(outboundSegs[0].depTime);
+                const groupDepTime = getLocalTimestamp(groupOutbound[0].depTime);
+                if (Math.abs(currentDepTime - groupDepTime) > 30 * 60 * 1000) return false;
+            }
+
+            // 4. Check inbound segments (for return flights)
+            if (inboundSegs.length !== groupInbound.length) return false;
+            for (let i = 0; i < inboundSegs.length; i++) {
+                const currentNum = normalizeFlightNum(inboundSegs[i].airlineCode, inboundSegs[i].flightNumber);
+                const groupNum = normalizeFlightNum(groupInbound[i].airlineCode, groupInbound[i].flightNumber);
+                if (currentNum !== groupNum) return false;
+            }
+
+            // 5. Check inbound departure time within 30 minutes
+            if (inboundSegs.length > 0) {
+                const currentDepTime = getLocalTimestamp(inboundSegs[0].depTime);
+                const groupDepTime = getLocalTimestamp(groupInbound[0].depTime);
+                if (Math.abs(currentDepTime - groupDepTime) > 30 * 60 * 1000) return false;
+            }
+
+            return true;
+        });
+
+        if (matchedGroup) {
             // Check for exact duplicate fare (same price + same rules/baggage)
-            const isDuplicate = existingGroup.fares.some(f => 
-                f.price.total === fareDetail.price.total && 
+            const isDuplicate = matchedGroup.fares.some(f => 
+                Number(f.price?.total) === Number(fareDetail.price?.total) && 
                 f.isRefundable === fareDetail.isRefundable && 
                 f.baggage === fareDetail.baggage
             );
 
             if (!isDuplicate) {
-                existingGroup.fares.push(fareDetail);
+                matchedGroup.fares.push(fareDetail);
             }
         } else {
             // Create a new grouped object
@@ -201,17 +258,23 @@ const transformSearchResponse = (tboResponse) => {
                 flights: flight.flights,
                 fares: [fareDetail]
             };
-            groupedFlights.set(flightKey, newGroup);
+            groupedFlights.push(newGroup);
         }
     });
 
-    // Sort fares within each group by price
-    const result = Array.from(groupedFlights.values());
-    result.forEach(group => {
-        group.fares.sort((a, b) => a.price.total - b.price.total);
+    // Sort fares within each group by price (ascending)
+    groupedFlights.forEach(group => {
+        group.fares.sort((a, b) => (Number(a.price?.total) || 0) - (Number(b.price?.total) || 0));
     });
 
-    return result;
+    // Sort the flight groups themselves by the cheapest fare price
+    groupedFlights.sort((a, b) => {
+        const priceA = Number(a.fares[0]?.price?.total) || 0;
+        const priceB = Number(b.fares[0]?.price?.total) || 0;
+        return priceA - priceB;
+    });
+
+    return groupedFlights;
 };
 
 // Helper function to process row seats
