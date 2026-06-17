@@ -1,5 +1,7 @@
 const axios = require('axios');
 const { transformSearchResponse, processSSRResponse } = require('../utils/helpers');
+const fs = require('fs');
+const path = require('path');
 
 const isSessionInvalidError = (error) => {
     if (!error) return false;
@@ -76,12 +78,28 @@ const searchFlights = async (payload) => {
     try {
         const response = await axios.post(process.env.SEARCH_API_URL, payload);
 
+        // Save raw response to flight.json
+        try {
+            fs.writeFileSync(path.join(__dirname, '../flight.json'), JSON.stringify(response.data, null, 2));
+            console.log('Saved raw TBO response to flight.json');
+        } catch (err) {
+            console.error('Error saving raw TBO response to flight.json:', err.message);
+        }
+
         if (response.data && response.data.Error && response.data.Error.ErrorCode !== 0) {
             if (isSessionInvalidError(response.data.Error)) {
                 console.log("Session invalid, re-authenticating...");
                 await authenticate();
                 payload.TokenId = tokenId;
                 const retryResponse = await axios.post(process.env.SEARCH_API_URL, payload);
+                
+                try {
+                    fs.writeFileSync(path.join(__dirname, '../flight.json'), JSON.stringify(retryResponse.data, null, 2));
+                    console.log('Saved raw TBO response (retry) to flight.json');
+                } catch (err) {
+                    console.error('Error saving raw TBO response to flight.json:', err.message);
+                }
+                
                 return transformSearchResponse(retryResponse.data);
             }
         }
