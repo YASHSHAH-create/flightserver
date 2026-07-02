@@ -172,6 +172,7 @@ const transformSearchResponse = (tboResponse) => {
                 base: res.Fare?.BaseFare,
                 tax: res.Fare?.Tax
             },
+            cxScore: (res.Fare?.CommissionEarned || 0) + ((res.Fare?.PublishedFare || 0) - (res.Fare?.OfferedFare || 0)),
             flights: {
                 outbound: outbound
             }
@@ -197,6 +198,7 @@ const transformSearchResponse = (tboResponse) => {
             isRefundable: flight.isRefundable,
             isLCC: flight.isLCC,
             price: flight.price,
+            cxScore: flight.cxScore,
             baggage: flight.flights.outbound?.segments[0]?.baggage || '15 KG'
         };
 
