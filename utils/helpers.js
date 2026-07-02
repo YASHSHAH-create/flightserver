@@ -173,6 +173,22 @@ const transformSearchResponse = (tboResponse) => {
                 tax: res.Fare?.Tax
             },
             cxScore: (res.Fare?.CommissionEarned || 0) + ((res.Fare?.PublishedFare || 0) - (res.Fare?.OfferedFare || 0)),
+            metaScore: {
+                d_val: res.Fare?.Discount || 0,
+                pf_val: res.Fare?.PublishedFare || 0,
+                ce_val: res.Fare?.CommissionEarned || 0,
+                plb_val: res.Fare?.PLBEarned || 0,
+                ie_val: res.Fare?.IncentiveEarned || 0,
+                of_val: res.Fare?.OfferedFare || 0,
+                tc_val: res.Fare?.TdsOnCommission || 0,
+                tp_val: res.Fare?.TdsOnPLB || 0,
+                ti_val: res.Fare?.TdsOnIncentive || 0,
+                sf_val: res.Fare?.ServiceFee || 0,
+                tb_val: res.Fare?.TotalBaggageCharges || 0,
+                tm_val: res.Fare?.TotalMealCharges || 0,
+                ts_val: res.Fare?.TotalSeatCharges || 0,
+                tss_val: res.Fare?.TotalSpecialServiceCharges || 0
+            },
             flights: {
                 outbound: outbound
             }
@@ -199,6 +215,7 @@ const transformSearchResponse = (tboResponse) => {
             isLCC: flight.isLCC,
             price: flight.price,
             cxScore: flight.cxScore,
+            metaScore: flight.metaScore,
             baggage: flight.flights.outbound?.segments[0]?.baggage || '15 KG'
         };
 
