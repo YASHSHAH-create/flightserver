@@ -173,10 +173,10 @@ const getFareQuote = async (req, res) => {
             try {
                 // Apply the transformer to get clean UI-friendly format
                 const cleanData = transformFareQuote(data);
-                
                 return res.json({ 
                     success: true, 
-                    data: cleanData 
+                    data: cleanData,
+                    rawTboResponse: data
                 });
             } catch (transformError) {
                 console.error("Transformer error:", transformError.message);
