@@ -574,7 +574,68 @@ const sendTelegramNotification = async (bookingData) => {
     }
 };
 
+const sendTelegramCancellationNotification = async (cancellationData) => {
+    try {
+        const token = process.env.TELEGRAM_BOT_TOKEN || "8656995629:AAEHExGEVOfXZIF0aLza0T86wbwOShPdxp8";
+        const { getSubscribers } = require('../services/telegramBot');
+        let chatIds = getSubscribers();
+
+        if (chatIds.length === 0 && process.env.TELEGRAM_CHAT_ID) {
+            chatIds.push(process.env.TELEGRAM_CHAT_ID);
+        }
+
+        if (chatIds.length === 0) return;
+
+        const { bookingId, pnr, changeRequestId, remarks, passengers, flightDetails, requestType } = cancellationData || {};
+
+        let msg = `🔴 <b>FLIGHT CANCELLATION REQUEST SUBMITTED!</b>\n\n`;
+        if (pnr) msg += `<b>PNR:</b> ${pnr}\n`;
+        if (bookingId) msg += `<b>Booking ID:</b> ${bookingId}\n`;
+        if (changeRequestId) msg += `<b>Change Request ID:</b> ${changeRequestId}\n\n`;
+
+        if (remarks) msg += `📝 <b>Remarks:</b> ${remarks}\n`;
+        msg += `📋 <b>Type:</b> ${requestType === 1 ? 'Full Cancellation' : 'Partial / Reschedule'}\n\n`;
+
+        if (passengers && passengers.length > 0) {
+            msg += `👤 <b>Passenger(s):</b>\n`;
+            passengers.forEach(p => {
+                msg += `- ${p.Title || ''} ${p.FirstName || ''} ${p.LastName || ''}\n`;
+                if (p.Email) msg += `  Email: ${p.Email}\n`;
+                if (p.ContactNo) msg += `  Phone: ${p.ContactNo}\n`;
+            });
+            msg += `\n`;
+        }
+
+        if (flightDetails && flightDetails.length > 0) {
+            msg += `✈️ <b>Flight Details:</b>\n`;
+            flightDetails.forEach(seg => {
+                msg += `- <b>${seg.AirlineName || seg.AirlineCode || 'Airline'} (${seg.FlightNumber || ''})</b>\n`;
+                msg += `  ${seg.Origin || ''} ➔ ${seg.Destination || ''}\n`;
+                if (seg.DepTime) msg += `  Dep: ${seg.DepTime}\n`;
+            });
+            msg += `\n`;
+        }
+
+        msg += `⏰ <b>Timestamp:</b> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`;
+
+        for (const chatId of chatIds) {
+            try {
+                await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    chat_id: chatId,
+                    text: msg,
+                    parse_mode: 'HTML'
+                });
+            } catch (e) {
+                console.error('Error sending Telegram cancellation notification:', e.message);
+            }
+        }
+    } catch (error) {
+        console.error('Error sending Telegram cancellation notification:', error.message);
+    }
+};
+
 module.exports = {
+    sendTelegramCancellationNotification,
     formatDate,
     getClassCode,
     transformSearchResponse,
@@ -584,3 +645,4 @@ module.exports = {
     seatLetterToNumber,
     sendTelegramNotification
 };
+
