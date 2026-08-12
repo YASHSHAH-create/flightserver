@@ -62,7 +62,7 @@ const saveToken = async (req, res) => {
             return res.status(400).json({ error: 'googleId and expoPushToken are required' });
         }
 
-        const user = await User.findOne({ googleId });
+        const user = await User.findOne({ googleId: String(googleId) });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -91,7 +91,7 @@ const sendNotification = async (req, res) => {
             if (!googleId) {
                 return res.status(400).json({ error: 'googleId is required for type "single"' });
             }
-            const user = await User.findOne({ googleId });
+            const user = await User.findOne({ googleId: String(googleId) });
             if (user && user.expoPushToken) {
                 pushTokens.push(user.expoPushToken);
             } else {

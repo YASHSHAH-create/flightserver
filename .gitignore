@@ -3,3 +3,9 @@ node_modules
 .DS_Store
 npm-debug.log
 *.log
+
+# sensitive data dumps (never commit)
+flight.json
+logs.json
+response.json
+*.json.bak

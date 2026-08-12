@@ -165,10 +165,11 @@ const getBookingDetails = async (req, res) => {
         else if (req.user) {
             userId = req.user._id;
         }
-        // 3. Unauthorized (Optional: depend on if you want public access or not, usually secure)
-        // For now, if no user identified, we might still allow if it's just an ID lookup? 
-        // But usually bookings are private. Let's enforce auth logic similar to getBookings if possible.
-        // If the user didn't specify strict auth on this new API, I will stick to the pattern.
+
+        // 3. A caller MUST be identified — bookings are private (prevents IDOR by omitting googleId)
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized: login or provide googleId' });
+        }
 
         const bookingId = req.params.id;
         if (!bookingId) {
@@ -181,8 +182,8 @@ const getBookingDetails = async (req, res) => {
             return res.status(404).json({ error: 'Booking not found' });
         }
 
-        // Optional: Check ownership
-        if (userId && booking.userId.toString() !== userId.toString()) {
+        // Ownership is now enforced unconditionally (userId is guaranteed above)
+        if (!booking.userId || booking.userId.toString() !== userId.toString()) {
             return res.status(403).json({ error: 'Unauthorized: access to this booking is denied' });
         }
 

@@ -29,16 +29,6 @@ const authenticate = async () => {
             EndUserIp: process.env.END_USER_IP
         };
         
-        console.log("=== TBO AUTHENTICATION INFO ===");
-        console.log("AUTH URL:", process.env.AUTH_API_URL);
-        console.log("AUTH CREDENTIALS BEING SENT:", {
-            ClientId: process.env.CLIENT_ID,
-            UserName: process.env.USERNAME,
-            Password: process.env.PASSWORD,
-            EndUserIp: process.env.END_USER_IP
-        });
-        console.log("===============================");
-
         const response = await axios.post(process.env.AUTH_API_URL, authPayload);
 
         if (response.data && response.data.TokenId) {

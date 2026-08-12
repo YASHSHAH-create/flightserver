@@ -11,6 +11,12 @@ const cron = require('node-cron');
 const { authenticate } = require('./services/tboService');
 const { initBotPolling } = require('./services/telegramBot');
 
+// Fail fast if signing secrets are missing — never fall back to a known literal
+if (!process.env.JWT_SECRET || !process.env.SESSION_SECRET) {
+    console.error('FATAL: JWT_SECRET and SESSION_SECRET must be set in the environment.');
+    process.exit(1);
+}
+
 // Start telegram bot polling
 initBotPolling();
 
@@ -118,11 +124,11 @@ app.use(express.json());
 
 // Session Setup
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'secret_key',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI || 'mongodb://localhost:27017/flight-app' }),
-    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 1 day
+    cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true, sameSite: 'lax', maxAge: 24 * 60 * 60 * 1000 } // 1 day
 }));
 
 // Passport Config

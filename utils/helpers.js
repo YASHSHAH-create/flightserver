@@ -120,6 +120,10 @@ const transformSearchResponse = (tboResponse) => {
                 arrTime: s.Destination?.ArrTime,
                 duration: s.Duration,
                 baggage: s.Baggage, // Expecting string like "15 Kg"
+                cabinBaggage: s.CabinBaggage, // Real cabin baggage e.g. "7 Kg"
+                noOfSeatAvailable: s.NoOfSeatAvailable, // Real remaining seats from TBO
+                cabinClass: s.CabinClass, // 2=Business, 6=First, else Economy
+                craft: s.Craft, // Real aircraft type e.g. "32N"
                 layoverTime: 0
             }));
 
@@ -208,6 +212,12 @@ const transformSearchResponse = (tboResponse) => {
         const outboundSegs = flight.flights.outbound?.segments || [];
         const inboundSegs = flight.flights.inbound?.segments || [];
 
+        // Real remaining seats = the tightest segment across the journey (TBO caps at 9)
+        const seatCounts = outboundSegs
+            .map(s => Number(s.noOfSeatAvailable))
+            .filter(n => Number.isFinite(n) && n > 0);
+        const seatsAvailable = seatCounts.length ? Math.min(...seatCounts) : null;
+
         const fareDetail = {
             resultIndex: flight.resultIndex,
             source: flight.source,
@@ -216,7 +226,10 @@ const transformSearchResponse = (tboResponse) => {
             price: flight.price,
             cxScore: flight.cxScore,
             metaScore: flight.metaScore,
-            baggage: flight.flights.outbound?.segments[0]?.baggage || '15 KG'
+            baggage: flight.flights.outbound?.segments[0]?.baggage || '15 KG',
+            cabinBaggage: flight.flights.outbound?.segments[0]?.cabinBaggage || null,
+            cabinClass: flight.flights.outbound?.segments[0]?.cabinClass || null,
+            seatsAvailable
         };
 
         // Find if there is an existing group that matches this flight
@@ -389,7 +402,8 @@ const seatLetterToNumber = (letter) => {
 
 const sendTelegramNotification = async (bookingData) => {
     try {
-        const token = process.env.TELEGRAM_BOT_TOKEN || "8656995629:AAEHExGEVOfXZIF0aLza0T86wbwOShPdxp8";
+        const token = process.env.TELEGRAM_BOT_TOKEN;
+        if (!token) { console.warn("TELEGRAM_BOT_TOKEN not set — skipping notification"); return; }
         
         // Ensure telegramBot dependency is required inline or globally
         const { getSubscribers } = require('../services/telegramBot');
@@ -576,7 +590,8 @@ const sendTelegramNotification = async (bookingData) => {
 
 const sendTelegramCancellationNotification = async (cancellationData) => {
     try {
-        const token = process.env.TELEGRAM_BOT_TOKEN || "8656995629:AAEHExGEVOfXZIF0aLza0T86wbwOShPdxp8";
+        const token = process.env.TELEGRAM_BOT_TOKEN;
+        if (!token) { console.warn("TELEGRAM_BOT_TOKEN not set — skipping notification"); return; }
         const { getSubscribers } = require('../services/telegramBot');
         let chatIds = getSubscribers();
 

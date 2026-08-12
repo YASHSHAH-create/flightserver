@@ -2,7 +2,9 @@ const User = require('../models/User');
 const Booking = require('../models/Booking');
 
 const findUserByGoogleId = async (googleId) => {
-    return await User.findOne({ googleId });
+    // Coerce to string to block NoSQL operator injection (e.g. ?googleId[$ne]=null)
+    if (googleId === undefined || googleId === null) return null;
+    return await User.findOne({ googleId: String(googleId) });
 };
 
 const findUserById = async (id) => {
