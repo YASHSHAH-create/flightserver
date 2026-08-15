@@ -9,3 +9,5 @@ flight.json
 logs.json
 response.json
 *.json.bak
+.env.*
+!.env.example
