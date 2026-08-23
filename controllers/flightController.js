@@ -1,6 +1,7 @@
 const tboService = require('../services/tboService');
 const { formatDate, getClassCode, seatLetterToNumber, sendTelegramNotification } = require('../utils/helpers');
 const { transformFareQuote } = require('../utils/tboTransformer');
+const roundTrip = require('../utils/roundTrip');
 const fs = require('fs');
 const path = require('path');
 
@@ -60,6 +61,12 @@ const search = async (req, res) => {
 
             if (!fDate1 || !fDate2) {
                 return res.status(400).json({ error: 'Invalid date format. Use DDMMYYYY. Return search requires returnDate.' });
+            }
+
+            // A return before the onward date is never valid — reject clearly
+            // instead of letting TBO fail with an opaque supplier error.
+            if (new Date(fDate2) < new Date(fDate1)) {
+                return res.status(400).json({ error: 'Return date cannot be before the departure date.' });
             }
 
             // Segment 1: Onward
@@ -158,6 +165,46 @@ const getFareQuote = async (req, res) => {
             return res.status(400).json({ error: 'Missing required parameters: traceId, resultIndex' });
         }
 
+        // Domestic return: "IDX1,IDX2" — TBO must be quoted per leg
+        if (roundTrip.isCombinedIndex(resultIndex)) {
+            const indexes = roundTrip.splitResultIndexes(resultIndex);
+            if (indexes.length !== 2) {
+                return res.status(400).json({ success: false, error: 'A return fare quote needs exactly two result indexes.' });
+            }
+
+            const rawLegs = [];
+            for (const idx of indexes) {
+                const legData = await tboService.getFareQuote({
+                    EndUserIp: process.env.END_USER_IP,
+                    TraceId: traceId,
+                    ResultIndex: idx
+                });
+                const legError = legData && legData.Error && legData.Error.ErrorCode !== 0;
+                if (legError || !legData || !legData.Results) {
+                    // Surface the failing leg raw — the app already understands
+                    // TBO error shapes (session expiry etc.)
+                    return res.json({ success: false, data: legData });
+                }
+                rawLegs.push(legData);
+            }
+
+            try {
+                const clean1 = transformFareQuote(rawLegs[0]);
+                const clean2 = transformFareQuote(rawLegs[1]);
+                const combined = roundTrip.combineCleanQuotes(clean1, clean2);
+                if (rawLegs.some(l => l.IsPriceChanged)) combined.IsPriceChanged = true;
+                combined.legs = rawLegs.map((l, i) => ({
+                    resultIndex: indexes[i],
+                    isLCC: l.Results?.IsLCC === true || l.Results?.IsLCC === 'true',
+                    fare: l.Results?.Fare || null,
+                }));
+                return res.json({ success: true, data: combined, rawTboResponse: { Legs: rawLegs } });
+            } catch (transformError) {
+                console.error('Round-trip quote transform error:', transformError.message);
+                return res.json({ success: false, data: { Error: { ErrorCode: 100, ErrorMessage: 'Could not combine return fare quote.' } } });
+            }
+        }
+
         const payload = {
             EndUserIp: process.env.END_USER_IP,
             TraceId: traceId,
@@ -204,6 +251,34 @@ const getSSR = async (req, res) => {
             return res.status(400).json({ error: 'Missing required parameters: traceId, resultIndex' });
         }
 
+        // Domestic return: fetch SSR per leg and merge the per-segment arrays —
+        // the add-ons screen derives its segment tabs from these arrays, so a
+        // plain concat gives it onward + return segments in order.
+        if (roundTrip.isCombinedIndex(resultIndex)) {
+            const indexes = roundTrip.splitResultIndexes(resultIndex);
+            const merged = { Error: { ErrorCode: 0, ErrorMessage: '' } };
+            const arrayKeys = ['Baggage', 'MealDynamic', 'Meal', 'SeatDynamic', 'SeatPreference', 'SpecialServices'];
+
+            for (const idx of indexes) {
+                const legData = await tboService.getSSR({
+                    EndUserIp: process.env.END_USER_IP,
+                    TraceId: traceId,
+                    ResultIndex: idx
+                });
+                if (legData && legData.Error && legData.Error.ErrorCode !== 0) {
+                    // SSR is optional — a failing leg just means no add-ons for it
+                    console.warn(`SSR failed for leg ${idx}: ${legData.Error.ErrorMessage}`);
+                    continue;
+                }
+                arrayKeys.forEach((k) => {
+                    if (Array.isArray(legData?.[k])) {
+                        merged[k] = [...(merged[k] || []), ...legData[k]];
+                    }
+                });
+            }
+            return res.json({ success: true, data: merged });
+        }
+
         const payload = {
             EndUserIp: process.env.END_USER_IP,
             TraceId: traceId,
@@ -223,6 +298,151 @@ const getSSR = async (req, res) => {
     }
 };
 
+/**
+ * Book ONE leg (one ResultIndex) — same LCC / non-LCC logic as the single
+ * booking path, but returns the raw TBO response instead of ending the HTTP
+ * request. Used by the round-trip path only.
+ */
+const bookOneLeg = async ({ TraceId, ResultIndex, Passengers, isLCC, IsPriceChangeAccepted }) => {
+    const endUserIp = process.env.END_USER_IP;
+
+    if (isLCC === true) {
+        const lccPayload = {
+            PreferredCurrency: null,
+            AgentReferenceNo: `PAYMM_${Date.now()}`,
+            Passengers,
+            EndUserIp: endUserIp,
+            TraceId,
+            ResultIndex,
+            IsPriceChangeAccepted: IsPriceChangeAccepted || false
+        };
+        return tboService.ticketLCC(lccPayload);
+    }
+
+    // Non-LCC: Hold (Book) then Ticket
+    const bookResponse = await tboService.bookNonLCC({
+        PreferredCurrency: null,
+        Passengers,
+        EndUserIp: endUserIp,
+        TraceId,
+        ResultIndex
+    });
+
+    if (bookResponse.Response && bookResponse.Response.Error && bookResponse.Response.Error.ErrorCode !== 0) {
+        return bookResponse;
+    }
+
+    const bookingMainResponse = bookResponse.Response?.Response;
+    if (!bookingMainResponse) {
+        return { Response: { Error: { ErrorCode: 100, ErrorMessage: 'Invalid Book response from supplier' }, Response: null } };
+    }
+
+    const bookedPassengers = bookingMainResponse.FlightItinerary?.Passenger || [];
+    const passportPayload = Passengers.map((pax, index) => ({
+        PaxId: bookedPassengers[index]?.PaxId,
+        PassportNo: pax.PassportNo || "",
+        PassportExpiry: pax.PassportExpiry || "",
+        DateOfBirth: pax.DateOfBirth,
+    }));
+
+    return tboService.ticketNonLCC({
+        EndUserIp: endUserIp,
+        TraceId,
+        PNR: bookingMainResponse.PNR,
+        BookingId: bookingMainResponse.BookingId,
+        Passport: passportPayload,
+        IsPriceChangeAccepted: IsPriceChangeAccepted || false
+    });
+};
+
+/**
+ * Domestic return: the combined "IDX1,IDX2" ResultIndex is booked as TWO
+ * independent TBO bookings (that is how TBO models domestic returns). Each leg
+ * is re-quoted first so it books with its OWN fare and its OWN LCC flag — the
+ * legs can be different airlines and different fare families. SSR picks are
+ * split per leg by segment (Origin|Destination), so nothing is charged twice.
+ * On success the two responses are merged into one normal-looking ticket
+ * response (combined PNR, merged segments/fare) for the payment server + app.
+ */
+const bookRoundTripLegs = async ({ TraceId, indexes, Passengers, IsPriceChangeAccepted }) => {
+    const legOutcomes = [];
+
+    for (let i = 0; i < indexes.length; i++) {
+        const idx = indexes[i];
+        const legName = i === 0 ? 'Onward' : 'Return';
+
+        // 1. Fresh quote — authoritative fare + LCC flag for this leg
+        let quote;
+        try {
+            quote = await tboService.getFareQuote({
+                EndUserIp: process.env.END_USER_IP,
+                TraceId,
+                ResultIndex: idx
+            });
+        } catch (e) {
+            quote = null;
+        }
+        const quoteError = !quote || !quote.Results || (quote.Error && quote.Error.ErrorCode !== 0);
+        if (quoteError) {
+            const msg = `${legName} leg fare quote failed: ${quote?.Error?.ErrorMessage || 'no results'}`;
+            console.error(`Paymm RT: ${msg}`);
+            return roundTrip.roundTripFailure(
+                legOutcomes.length
+                    ? `${msg}. IMPORTANT: onward leg already ticketed (PNR ${legOutcomes[0].pnr || 'unknown'}) — needs manual attention.`
+                    : msg,
+                legOutcomes.map(o => ({ pnr: o.pnr, bookingId: o.bookingId, response: o.response }))
+            );
+        }
+
+        const legIsLCC = quote.Results.IsLCC === true || quote.Results.IsLCC === 'true';
+        const legFare = quote.Results.Fare;
+        const pairSet = roundTrip.legSegmentPairs(quote.Results);
+
+        // 2. Per-leg passengers: leg fare + only this leg's SSR selections
+        const legPassengers = Passengers.map((pax) => ({
+            ...pax,
+            Fare: legFare || pax.Fare,
+            Baggage: roundTrip.filterSSRForLeg(pax.Baggage, pairSet, i === 0),
+            MealDynamic: roundTrip.filterSSRForLeg(pax.MealDynamic, pairSet, i === 0),
+            SeatDynamic: roundTrip.filterSSRForLeg(pax.SeatDynamic, pairSet, i === 0),
+        }));
+
+        console.log(`Paymm RT: Booking ${legName} leg [index=${idx}, isLCC=${legIsLCC}]`);
+
+        // 3. Book this leg
+        let legResponse;
+        try {
+            legResponse = await bookOneLeg({
+                TraceId,
+                ResultIndex: idx,
+                Passengers: legPassengers,
+                isLCC: legIsLCC,
+                IsPriceChangeAccepted
+            });
+        } catch (e) {
+            legResponse = { Response: { Error: { ErrorCode: 100, ErrorMessage: e.message }, Response: null } };
+        }
+
+        const outcome = roundTrip.readBookOutcome(legResponse);
+        if (outcome.error || !outcome.pnr) {
+            const msg = `${legName} leg booking failed: ${outcome.error?.ErrorMessage || 'no PNR returned'}`;
+            console.error(`Paymm RT: ${msg}`);
+            return roundTrip.roundTripFailure(
+                legOutcomes.length
+                    ? `${msg}. IMPORTANT: onward leg already ticketed (PNR ${legOutcomes[0].pnr || 'unknown'}) — needs manual attention.`
+                    : msg,
+                [...legOutcomes.map(o => ({ pnr: o.pnr, bookingId: o.bookingId, response: o.response })),
+                 { pnr: outcome.pnr, bookingId: outcome.bookingId, response: legResponse }]
+            );
+        }
+
+        console.log(`Paymm RT: ${legName} leg ticketed. PNR: ${outcome.pnr}`);
+        legOutcomes.push({ ...outcome, response: legResponse });
+    }
+
+    return roundTrip.mergeBookedLegs(legOutcomes[0].response, legOutcomes[1].response);
+};
+
 const bookFlight = async (req, res) => {
     try {
         const {
@@ -234,6 +454,20 @@ const bookFlight = async (req, res) => {
         } = req.body;
 
         const endUserIp = process.env.END_USER_IP;
+
+        // --- Domestic return (two indexes joined with a comma) ---
+        if (roundTrip.isCombinedIndex(ResultIndex)) {
+            const indexes = roundTrip.splitResultIndexes(ResultIndex);
+            if (indexes.length !== 2) {
+                return res.status(400).json({ error: 'A return booking needs exactly two result indexes.' });
+            }
+            console.log(`Paymm: Initiating Round-Trip booking [${indexes.join(' + ')}]`);
+            const combined = await bookRoundTripLegs({ TraceId, indexes, Passengers, IsPriceChangeAccepted });
+            if (combined?.Response?.Error?.ErrorCode === 0 && combined?.Response?.Response?.FlightItinerary) {
+                sendTelegramNotification(combined);
+            }
+            return res.status(200).json(combined);
+        }
 
         // --- logic for LCC (Direct Ticket) ---
         if (isLCC === true) {
