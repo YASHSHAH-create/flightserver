@@ -86,6 +86,16 @@ const syncGoogleUser = async (req, res) => {
             await user.save();
         }
 
+        // A device token belongs to exactly one account — strip it from other
+        // user docs so broadcasts don't hit the same phone multiple times
+        const deviceToken = user.expoPushToken || user.pushToken;
+        if (deviceToken) {
+            await User.updateMany(
+                { _id: { $ne: user._id }, $or: [{ expoPushToken: deviceToken }, { pushToken: deviceToken }] },
+                { $unset: { expoPushToken: 1, pushToken: 1 } }
+            );
+        }
+
         // Generate token
         const token = jwt.sign(
             { id: user._id, email: user.email },

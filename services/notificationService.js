@@ -70,6 +70,13 @@ const saveToken = async (req, res) => {
         user.expoPushToken = expoPushToken;
         await user.save();
 
+        // A device token belongs to exactly one account — strip it from any
+        // other user doc so broadcasts don't hit the same phone multiple times
+        await User.updateMany(
+            { _id: { $ne: user._id }, $or: [{ expoPushToken }, { pushToken: expoPushToken }] },
+            { $unset: { expoPushToken: 1, pushToken: 1 } }
+        );
+
         res.status(200).json({ message: 'Push token saved successfully' });
     } catch (error) {
         console.error('Error saving push token:', error);
@@ -108,6 +115,14 @@ const sendNotification = async (req, res) => {
             }
         } else {
             return res.status(400).json({ error: 'Invalid type, must be "all" or "single"' });
+        }
+
+        // One device = one notification: several user docs can hold the same
+        // device token (multiple accounts on one phone, legacy duplicate docs),
+        // and without dedupe that device receives one copy per doc
+        pushTokens = [...new Set(pushTokens)].filter(t => typeof t === 'string' && t.startsWith('ExponentPushToken'));
+        if (pushTokens.length === 0) {
+            return res.status(404).json({ error: 'No valid Expo push tokens found' });
         }
 
         const messages = pushTokens.map(token => ({
