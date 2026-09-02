@@ -303,6 +303,28 @@ const getSSR = async (req, res) => {
  * booking path, but returns the raw TBO response instead of ending the HTTP
  * request. Used by the round-trip path only.
  */
+/**
+ * GDS (non-LCC) Book passengers must not carry the LCC-shaped `MealDynamic`
+ * array: the SSR for GDS flights returns static meals as `Meal: [{Code,
+ * Description}]`, the app stores the pick under MealDynamic, and TBO then
+ * fails to deserialise the text Description as Int64 ("'VEGETARIAN HINDU
+ * MEAL' cannot be parsed as the type 'Int64'") — the whole Book is rejected
+ * after the customer has paid. For GDS, TBO expects a single `Meal` object
+ * per passenger; SeatDynamic (numeric fields, priced GDS seat maps) and
+ * Baggage are passed through unchanged.
+ */
+const toGdsPassenger = (pax) => {
+    const out = { ...pax };
+    const meals = Array.isArray(pax.MealDynamic) ? pax.MealDynamic.filter(Boolean) : [];
+    const isStaticMeal = (m) => m && typeof m.Code === 'string' && (m.Price === undefined || typeof m.Description === 'string');
+    if (!out.Meal && meals.length && isStaticMeal(meals[0])) {
+        out.Meal = { Code: String(meals[0].Code), Description: String(meals[0].Description || '') };
+    }
+    if (meals.length && meals.some(isStaticMeal)) delete out.MealDynamic;
+    if (out.Meal && typeof out.Meal === 'string') out.Meal = { Code: out.Meal, Description: '' };
+    return out;
+};
+
 const bookOneLeg = async ({ TraceId, ResultIndex, Passengers, isLCC, IsPriceChangeAccepted }) => {
     const endUserIp = process.env.END_USER_IP;
 
@@ -322,7 +344,7 @@ const bookOneLeg = async ({ TraceId, ResultIndex, Passengers, isLCC, IsPriceChan
     // Non-LCC: Hold (Book) then Ticket
     const bookResponse = await tboService.bookNonLCC({
         PreferredCurrency: null,
-        Passengers,
+        Passengers: Passengers.map(toGdsPassenger),
         EndUserIp: endUserIp,
         TraceId,
         ResultIndex
